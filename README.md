@@ -1,3 +1,1 @@
-# SpikingNetworks
-
-[![Build Status](https://travis-ci.org/YaoLuCNS/SpikingNetworks.jl.svg?branch=master)](https://travis-ci.org/YaoLuCNS/SpikingNetworks.jl)
+see [SpikingNetworksTutorial.ipynb](http://nbviewer.jupyter.org/gist/YaoLuCNS/6fcedfc9baff9c72f999)

@@ -1,10 +1,10 @@
-immutable RateSynapseParameters
+immutable RateSynapseParameter
   lr::Float
 end
 
 export RateSynapse
 type RateSynapse
-  params::RateSynapseParameters
+  params::RateSynapseParameter
   rowptr::Array{Int,1}
   colptr::Array{Int,1}
   I::Array{Int,1}
@@ -15,8 +15,9 @@ type RateSynapse
   g::Array{Float,1}
   records::Dict
 end
+
 function RateSynapse(pre, post; lr=1e-3, σ=0.0, p=0.0)
-    params = RateSynapseParameters(lr)
+    params = RateSynapseParameter(lr)
     w = σ/√(p*pre.N)*sprandn(post.N, pre.N, p)
     rowptr, colptr, I, J, W = dsparse(w)
     rI = post.r
@@ -27,7 +28,7 @@ function RateSynapse(pre, post; lr=1e-3, σ=0.0, p=0.0)
 end
 
 export forward!
-@replace function forward!(c::RateSynapse, params::RateSynapseParameters, t)
+@replace function forward!(c::RateSynapse, params::RateSynapseParameter, t)
     fill!(g, zero(eltype(g)))
     @inbounds for j in 1:length(colptr)-1
       rJj = rJ[j]
@@ -38,11 +39,11 @@ export forward!
 end
 
 export integrate!
-function integrate!(c::RateSynapse, params::RateSynapseParameters, t)
+function integrate!(c::RateSynapse, params::RateSynapseParameter, t)
 end
 
 export plasticity!
-@replace function plasticity!(c::RateSynapse, params::RateSynapseParameters, t)
+@replace function plasticity!(c::RateSynapse, params::RateSynapseParameter, t)
   @inbounds for j in 1:length(colptr)-1
     rowind = colptr[j] : (colptr[j+1]-1)
     rIW = zero(Float)

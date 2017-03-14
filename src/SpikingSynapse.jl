@@ -1,4 +1,4 @@
-immutable SpikingSynapseParameters
+immutable SpikingSynapseParameter
   τpre::Float
   τpost::Float
   Apre::Float
@@ -7,7 +7,7 @@ end
 
 export SpikingSynapse
 type SpikingSynapse
-  params::SpikingSynapseParameters
+  params::SpikingSynapseParameter
   rowptr::Array{Int,1}
   colptr::Array{Int,1}
   I::Array{Int,1}
@@ -22,9 +22,10 @@ type SpikingSynapse
   g::Array{Float,1}
   records::Dict
 end
+
 function SpikingSynapse(pre, post, sym;
   σ=0.0, p=0.0, τpre=20, τpost=20, Apre=0.01, Apost=-0.01*1.05)
-    params = SpikingSynapseParameters(τpre,τpost,Apre,Apost)
+    params = SpikingSynapseParameter(τpre,τpost,Apre,Apost)
     w = σ*sprand(post.N,pre.N,p)
     rowptr, colptr, I, J, W = dsparse(w)
     tpre = zeros(W)
@@ -38,7 +39,7 @@ function SpikingSynapse(pre, post, sym;
 end
 
 export forward!
-@replace function forward!(c::SpikingSynapse, params::SpikingSynapseParameters, t)
+@replace function forward!(c::SpikingSynapse, params::SpikingSynapseParameter, t)
   @inbounds for j in 1:length(colptr)-1
     if fireJ[j]
       for s in colptr[j]: (colptr[j+1] - 1)
@@ -50,11 +51,11 @@ end
 
 
 export integrate!
-@replace function integrate!(c::SpikingSynapse, params::SpikingSynapseParameters, t)
+@replace function integrate!(c::SpikingSynapse, params::SpikingSynapseParameter, t)
 end
 
 export plasticity!
-@replace function plasticity!(c::SpikingSynapse, params::SpikingSynapseParameters, t)
+@replace function plasticity!(c::SpikingSynapse, params::SpikingSynapseParameter, t)
   @inbounds for j in 1:length(colptr)-1
     if fireJ[j]
       for s in colptr[j] : (colptr[j+1] - 1)
@@ -80,7 +81,7 @@ export plasticity!
 end
 
 
-# immutable SpikingSynapseParameters
+# immutable SpikingSynapseParameter
 #   τpre::Float
 #   τpost::Float
 #   Apre::Float
@@ -89,7 +90,7 @@ end
 #
 # export SpikingSynapse
 # type SpikingSynapse
-#   params::SpikingSynapseParameters
+#   params::SpikingSynapseParameter
 #   rowptr::Array{Int,1}
 #   colptr::Array{Int,1}
 #   I::Array{Int,1}
@@ -104,7 +105,7 @@ end
 # end
 # function SpikingSynapse(pre, post, sym;
 #   σ=0.0, p=0.0, τpre=20, τpost=20, Apre=0.01, Apost=-0.01*1.05)
-#     params = SpikingSynapseParameters(τpre,τpost,Apre,Apost)
+#     params = SpikingSynapseParameter(τpre,τpost,Apre,Apost)
 #     w = σ*sprand(post.N,pre.N,p)
 #     rowptr, colptr, I, J, W = dsparse(w)
 #     apre = zeros(W)
@@ -116,7 +117,7 @@ end
 # end
 #
 # export forward!
-# @replace function forward!(c::SpikingSynapse, params::SpikingSynapseParameters)
+# @replace function forward!(c::SpikingSynapse, params::SpikingSynapseParameter)
 #   @inbounds for j in 1:length(colptr)-1
 #     if fireJ[j]
 #       for s in colptr[j]:colptr[j+1]-1
@@ -128,7 +129,7 @@ end
 #
 #
 # export integrate!
-# @replace function integrate!(c::SpikingSynapse, params::SpikingSynapseParameters)
+# @replace function integrate!(c::SpikingSynapse, params::SpikingSynapseParameter)
 #   @inbounds for s in eachindex(apre)
 #     apre[s] *= 1 - dt / τpre
 #     apost[s] *= 1 - dt / τpost
@@ -136,7 +137,7 @@ end
 # end
 #
 # export plasticity!
-# @replace function plasticity!(c::SpikingSynapse, params::SpikingSynapseParameters)
+# @replace function plasticity!(c::SpikingSynapse, params::SpikingSynapseParameter)
 #   @inbounds for j in 1:length(colptr)-1
 #     if fireJ[j]
 #       for s in colptr[j]:colptr[j+1]-1

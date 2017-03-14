@@ -1,4 +1,4 @@
-immutable HHParameters
+immutable HHParameter
   Cm::Float
   gl::Float
   El::Float
@@ -15,7 +15,7 @@ end
 
 export HH
 type HH
-  params::HHParameters
+  params::HHParameter
   N::Int
   v::Array{Float,1}
   m::Array{Float,1}
@@ -27,6 +27,7 @@ type HH
   I::Array{Float,1}
   records::Dict
 end
+
 function HH(N)
   area = 20000*um^2
   Cm = 1*uF*cm^(-2)*area
@@ -41,7 +42,7 @@ function HH(N)
   τi = 10ms
   Ee = 0mV
   Ei = -80mV
-  params = HHParameters(Cm, gl, El, Ek, En, gn, gk, Vt, τe, τi, Ee, Ei)
+  params = HHParameter(Cm, gl, El, Ek, En, gn, gk, Vt, τe, τi, Ee, Ei)
   v = El + 5(randn(N) - 1)
   m = zeros(N)
   n = zeros(N)
@@ -55,7 +56,7 @@ function HH(N)
 end
 
 export integrate!
-@replace function integrate!(p::HH, params::HHParameters, t)
+@replace function integrate!(p::HH, params::HHParameter, t)
   @inbounds for i = 1:N
     m[i] += dt * (0.32 * (13 - v[i] + Vt) / (exp((13 - v[i] + Vt) / 4) - 1) * (1 - m[i]) -
     0.28 * (v[i] - Vt - 40) / (exp((v[i] - Vt - 40) / 5) - 1) * m[i])

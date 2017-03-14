@@ -1,10 +1,9 @@
-
-immutable RateParameters
+immutable RateParameter
 end
 
 export Rate
 type Rate
-  params::RateParameters
+  params::RateParameter
   N::Int
   x::Array{Float,1}
   r::Array{Float,1}
@@ -12,8 +11,9 @@ type Rate
   I::Array{Float,1}
   records::Dict
 end
+
 function Rate(N)
-  params = RateParameters()
+  params = RateParameter()
   x = randn(N)
   r = zeros(N)
   g = zeros(N)
@@ -23,7 +23,7 @@ function Rate(N)
 end
 
 export integrate!
-@replace function integrate!(p::Rate, params::RateParameters, t)
+@replace function integrate!(p::Rate, params::RateParameter, t)
   @inbounds for i = 1:N
     x[i] += dt * (-x[i] + g[i] + I[i])
     r[i] = tanh(x[i]) #max(0, x[i])

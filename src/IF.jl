@@ -1,4 +1,4 @@
-immutable IFParameters
+immutable IFParameter
   τm::Float
   τe::Float
   τi::Float
@@ -9,7 +9,7 @@ end
 
 export IF
 type IF
-  params::IFParameters
+  params::IFParameter
   N::Int
   v::Array{Float,1}
   ge::Array{Float,1}
@@ -19,7 +19,7 @@ type IF
   records::Dict
 end
 function IF(N; τm=20ms, τe=5ms, τi=10ms, Vt=-50mV, Vr=-60mV, El=Vr)
-  params = IFParameters(τm, τe, τi, Vt, Vr, El)
+  params = IFParameter(τm, τe, τi, Vt, Vr, El)
   v = Vr + rand(N)*(Vt - Vr)
   ge = zeros(N)
   gi = zeros(N)
@@ -31,7 +31,7 @@ end
 
 
 export integrate!
-@replace function integrate!(p::IF, params::IFParameters, t)
+@replace function integrate!(p::IF, params::IFParameter, t)
   @inbounds for i = 1:N
     v[i] += dt * (ge[i] + gi[i] - (v[i] - El) + I[i]) / τm
     ge[i] += dt * -ge[i] / τe

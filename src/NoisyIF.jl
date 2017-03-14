@@ -1,4 +1,4 @@
-immutable NoisyIFParameters
+immutable NoisyIFParameter
   τm::Float
   τe::Float
   τi::Float
@@ -10,7 +10,7 @@ end
 
 export NoisyIF
 type NoisyIF
-  params::NoisyIFParameters
+  params::NoisyIFParameter
   N::Int
   v::Array{Float,1}
   ge::Array{Float,1}
@@ -19,8 +19,9 @@ type NoisyIF
   I::Array{Float,1}
   records::Dict
 end
+
 function NoisyIF(N; τm=20ms, τe=5ms, τi=10ms, Vt=-50mV, Vr=-60mV, El=Vr, σ=0)
-  params = NoisyIFParameters(τm, τe, τi, Vt, Vr, El, σ)
+  params = NoisyIFParameter(τm, τe, τi, Vt, Vr, El, σ)
   v = Vr + rand(N)*(Vt - Vr)
   ge = zeros(N)
   gi = zeros(N)
@@ -30,9 +31,8 @@ function NoisyIF(N; τm=20ms, τe=5ms, τi=10ms, Vt=-50mV, Vr=-60mV, El=Vr, σ=0
   NoisyIF(params, N, v, ge, gi, fire, I, records)
 end
 
-
 export integrate!
-@replace function integrate!(p::NoisyIF, params::NoisyIFParameters, t)
+@replace function integrate!(p::NoisyIF, params::NoisyIFParameter, t)
   @inbounds for i = 1:N
     v[i] += dt * (ge[i] + gi[i] - (v[i] - El) + I[i] + σ / √dt * randn()) / τm
     ge[i] += dt * -ge[i] / τe

@@ -1,4 +1,4 @@
-immutable IZParameters
+immutable IZParameter
   a::Float
   b::Float
   c::Float
@@ -7,7 +7,7 @@ end
 
 export IZ
 type IZ
-  params::IZParameters
+  params::IZParameter
   N::Int
   v::Array{Float,1}
   u::Array{Float,1}
@@ -16,7 +16,7 @@ type IZ
   records::Dict
 end
 function IZ(N; a=0.02, b=0.2, c=-65, d=2)
-  params = IZParameters(a, b, c, d)
+  params = IZParameter(a, b, c, d)
   v = -65ones(N)
   u = b*v
   fire = zeros(Bool,N)
@@ -26,7 +26,7 @@ function IZ(N; a=0.02, b=0.2, c=-65, d=2)
 end
 
 export integrate!
-@replace function integrate!(p::IZ, params::IZParameters, t)
+@replace function integrate!(p::IZ, params::IZParameter, t)
   @inbounds for i = 1:N
     v[i] += dt/2 * (0.04v[i]^2 + 5.0v[i] + 140.0 - u[i] + I[i])
     v[i] += dt/2 * (0.04v[i]^2 + 5.0v[i] + 140.0 - u[i] + I[i])

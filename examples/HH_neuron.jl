@@ -1,10 +1,8 @@
-import Plots, Utils
-reload("SNN")
+using Plots, SNN
 
-Utils.@evalat SNN dt = 0.01
-E = SNN.HH(1)
+E = SNN.HH(;N = 1)
 E.I = [0.001]
-Utils.monitor(E, [:v])
 
-@time SNN.sim!([E], []; duration=100)
+SNN.monitor(E, [:v])
+SNN.sim!([E], []; dt = 0.01ms, duration = 100ms)
 SNN.vecplot(E, :v) |> display

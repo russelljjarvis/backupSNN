@@ -1,21 +1,18 @@
-import Plots, Utils
-reload("SNN")
-Utils.@evalat SNN dt = 0.5
+using Plots, SNN
 
 N = 100
-E1 = SNN.IF(N)
-E2 = SNN.IF(N)
+E1 = SNN.IF(;N = N)
+E2 = SNN.IF(;N = N)
 EE = SNN.SpikingSynapse(E1, E2, :ge)
-[SNN.connect!(EE, n, n) for n = 1:E1.N]
-Utils.monitor([E1, E2], [:fire])
-Utils.monitor(EE, [:W])
+for n = 1:E1.N SNN.connect!(EE, n, n) end
+SNN.monitor([E1, E2], [:fire])
+SNN.monitor(EE, [:W])
 
-for i = 1:N
-  E1.v[i] = 100
-  E2.v[N-i+1] = 100
-  SNN.train!([E1,E2], [EE], (i-1)*SNN.dt)
+for t = 1:N
+  E1.v[t] = 100
+  E2.v[N-t+1] = 100
+  SNN.train!([E1,E2], [EE], 0.5ms, (t - 1) * 0.5ms)
 end
-
 SNN.raster([E1, E2]) |> display
 ΔW = EE.records[:W][end]
-Plots.plot(ΔW) |> display
+plot(ΔW) |> display

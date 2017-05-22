@@ -1,9 +1,8 @@
-import Plots, Utils
-reload("SNN")
+using Plots, SNN
 
-E = SNN.IF(1)
+E = SNN.IF(;N = 1)
 E.I = [11]
-Utils.monitor(E, [:v,:fire])
+SNN.monitor(E, [:v, :fire])
 
-@time SNN.sim!([E], []; duration=300)
+SNN.sim!([E], []; duration = 300ms)
 SNN.vecplot(E, :v) |> display

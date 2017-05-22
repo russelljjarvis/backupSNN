@@ -1,12 +1,13 @@
-import Plots, Utils
-reload("SNN")
+using Plots, SNN
 
 N = 3
-E = SNN.IF(N)
+E = SNN.IF(;N = N)
 EE = SNN.SpikingSynapse(E, E, :ge)
-[SNN.connect!(EE, n, n+1, 50) for n = 1 : N-1]
-Utils.monitor(E, [(:v,[1,N])])
+for n in 1:(N - 1)
+  SNN.connect!(EE, n, n + 1, 50)
+end
 E.I[1] = 30
 
-@time SNN.sim!([E], [EE]; duration=100)
+SNN.monitor(E, [(:v, [1, N])])
+SNN.sim!([E], [EE]; duration = 100ms)
 SNN.vecplot(E, :v) |> display

@@ -1,11 +1,11 @@
-import Plots, Utils
-reload("SNN")
+using Plots, SNN
+
 #
 # N = 1000
 # G = SNN.NoisyIF(N; τm=1, Vt=1, Vr=0, El=0, σ=0.8)
 # fill!(G.I, 1.01)
 # G.v = -1.5 + rand(N)
-# Utils.monitor(G, [:fire, :v])
+# SNN.monitor(G, [:fire, :v])
 #
 # SNN.sim!([G], []; duration=3)
 # # SNN.raster([G]) |> display
@@ -13,14 +13,14 @@ reload("SNN")
 # SNN.density(G, :v)
 #
 #
-# import Plots, Utils
-# reload("SNN")
+# using Plots, SNN
+# 
 #
 N = 1000
 G = SNN.NoisyIF(N; τm=1, Vt=1, Vr=0, El=0, σ=0)
 fill!(G.I, 1.01)
 
-Utils.monitor(G, [:fire])
+SNN.monitor(G, [:fire])
 
 SNN.sim!([G], []; duration=30)
 SNN.raster([G]) |> display
@@ -32,7 +32,7 @@ Plots.savefig("raster.jpg")
 #   N = 1000
 #   G = SNN.NoisyIF(N; τm=1, Vt=1, Vr=0, El=0, σ=σ)
 #   fill!(G.I, I)
-#   Utils.monitor(G, [:fire])
+#   SNN.monitor(G, [:fire])
 #   SNN.sim!([G], []; duration=100)
 #   A = sum.(G.records[:fire])/G.N#/SNN.dt
 #   mean(A[end÷2:end])

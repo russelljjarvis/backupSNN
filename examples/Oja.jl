@@ -6,4 +6,3 @@ SNN.monitor(G, [:r])
 
 SNN.train!([G], [GG]; duration = 100ms)
 SNN.rateplot([G], :r) |> display
-SNN.vecplot([G], :r) |> display

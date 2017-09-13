@@ -12,12 +12,9 @@ P = [E, I]
 C = [EE, EI, IE, II]
 
 SNN.monitor([E, I], [:fire])
-for t = 1 : 1000
+for t = 1:1000
   E.I .= 5randn(Ne)
   I.I .= 2randn(Ni)
   SNN.sim!(P, C, 1ms)
 end
 SNN.raster(P) |> display
-
-
-# Utils.@evalat SNN dt = 1.0

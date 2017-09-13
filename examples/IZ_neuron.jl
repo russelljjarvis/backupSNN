@@ -18,7 +18,7 @@ for t = 0:T
   end
   TC1.I = [(t < 0.2T) ? 0mV : 2mV]
   TC2.I = [(t < 0.2T) ? -30mV : 0mV]
-  RZ.I = [(0.5T < t < 0.6T) ? 10mV : 0mV]
+  RZ.I =  [(0.5T < t < 0.6T) ? 10mV : 0mV]
   SNN.sim!(P, [], 0.1ms)
 end
 SNN.vecplot(P, :v) |> display

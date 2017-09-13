@@ -2,7 +2,7 @@ using StatsBase, Plots
 
 function raster(p)
   fire = p.records[:fire]
-  x, y = Float32[], Float32[];
+  x, y = Float[], Float[];
   for t = eachindex(fire)
     for n in find(fire[t])
       push!(x, t)
@@ -14,7 +14,7 @@ end
 
 function raster(P::Array)
   y0 = Int[0]
-  X = Float32[]; Y = Float32[]
+  X = Float[]; Y = Float[]
   for p in P
     x, y = raster(p)
     append!(X, x)
@@ -39,7 +39,8 @@ end
 
 function vecplot(P::Array, sym)
   plts = [vecplot(p, sym) for p in P]
-  plot(plts..., layout = (length(plts), 1))
+  N = length(plts)
+  plot(plts..., size = (600, 400N), layout = (N, 1))
 end
 
 function windowsize(p)
@@ -92,7 +93,7 @@ end
 function if_curve(model, current; neuron = 1, dt = 0.1ms, duration = 1second)
   E = model(neuron)
   monitor(E, [:fire])
-  f = Float32[]
+  f = Float[]
   for I = current
     clear_records(E)
     E.I = [I]

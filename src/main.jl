@@ -14,7 +14,7 @@ function sim!(P, C; dt = 0.1ms, duration = 10ms)
   end
 end
 
-function train!(P, C, dt, t)
+function train!(P, C, dt, t = 0)
   for p in P
     integrate!(p, p.param, Float(dt))
     record!(p)

@@ -4,8 +4,8 @@ end
 @withkw type Rate
   param::RateParameter = RateParameter()
   N::Int = 100
-  x::Vector{Float} = randn(N)
-  r::Vector{Float} = zeros(N)
+  x::Vector{Float} = 0.5randn(N)
+  r::Vector{Float} = tanh(x)
   g::Vector{Float} = zeros(N)
   I::Vector{Float} = zeros(N)
   records::Dict = Dict()

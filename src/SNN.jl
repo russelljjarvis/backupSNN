@@ -21,6 +21,10 @@ include("neuron/rate.jl")
 
 include("synapse/spiking_synapse.jl")
 include("synapse/rate_synapse.jl")
+include("synapse/pinning_full_synapse.jl")
+# include("synapse/pinning_synapse.jl")
+include("synapse/fl_full_synapse.jl")
+# include("synapse/fl_synapse.jl")
 
 isdefined(Main, :Plots) && include("plot.jl")
 

@@ -19,5 +19,4 @@ for (i, t) in enumerate(ts)
   SNN.train!(P, C, 0.1ms, t)
 end
 
-SNN.vecplot(ppc_ppc, :g)
-plot!(f.(ts)) |> gui
+SNN.vecplot(ppc_ppc, :g); plot!(f.(ts)) |> gui

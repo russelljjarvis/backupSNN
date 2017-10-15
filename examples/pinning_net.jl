@@ -1,4 +1,4 @@
-using Plots, SNN; plotly(); reload("SNN")
+using Plots, SNN; plotly(); #reload("SNN")
 
 S = SNN.Rate(;N = 200)
 SS = SNN.PINningSynapse(S, S; σ = 1.5, p = 1.0)

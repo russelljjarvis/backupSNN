@@ -5,6 +5,7 @@ function sim!(P, C, dt)
   end
   for c in C
     forward!(c, c.param)
+    record!(c)
   end
 end
 

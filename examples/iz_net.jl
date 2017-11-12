@@ -13,8 +13,8 @@ C = [EE, EI, IE, II]
 
 SNN.monitor([E, I], [:fire])
 for t = 1:1000
-  E.I .= 5randn(Ne)
-  I.I .= 2randn(Ni)
-  SNN.sim!(P, C, 1ms)
+    E.I .= 5randn(Ne)
+    I.I .= 2randn(Ni)
+    SNN.sim!(P, C, 1ms)
 end
 SNN.raster(P) |> display

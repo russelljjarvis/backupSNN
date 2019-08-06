@@ -1,33 +1,35 @@
-@withkw immutable HHParameter
-    Cm::Float = 1uF * cm^(-2) * 20000um^2
-    gl::Float = 5e-5siemens * cm^(-2) * 20000um^2
-    El::Float = -65mV
-    Ek::Float = -90mV
-    En::Float = 50mV
-    gn::Float = 100msiemens * cm^(-2) * 20000um^2
-    gk::Float = 30msiemens * cm^(-2) * 20000um^2
-    Vt::Float = -63mV
-    τe::Float = 5ms
-    τi::Float = 10ms
-    Ee::Float = 0mV
-    Ei::Float = -80mV
+@with_kw struct HHParameter
+    Cm::SNNFloat = 1uF * cm^(-2) * 20000um^2
+    gl::SNNFloat = 5e-5siemens * cm^(-2) * 20000um^2
+    El::SNNFloat = -65mV
+    Ek::SNNFloat = -90mV
+    En::SNNFloat = 50mV
+    gn::SNNFloat = 100msiemens * cm^(-2) * 20000um^2
+    gk::SNNFloat = 30msiemens * cm^(-2) * 20000um^2
+    Vt::SNNFloat = -63mV
+    τe::SNNFloat = 5ms
+    τi::SNNFloat = 10ms
+    Ee::SNNFloat = 0mV
+    Ei::SNNFloat = -80mV
 end
 
-@withkw type HH
+@with_kw mutable struct HH
     param::HHParameter = HHParameter()
-    N::Int = 100
-    v::Vector{Float} = param.El + 5(randn(N) - 1)
-    m::Vector{Float} = zeros(N)
-    n::Vector{Float} = zeros(N)
-    h::Vector{Float} = ones(N)
-    ge::Vector{Float}  = (1.5randn(N) + 4) * 10nS
-    gi::Vector{Float}  = (12randn(N) + 20) * 10nS
+    N::SNNInt = 100
+    v::Vector{SNNFloat} = param.El .+ 5(randn(N) .- 1)
+    m::Vector{SNNFloat} = zeros(N)
+    n::Vector{SNNFloat} = zeros(N)
+    h::Vector{SNNFloat} = ones(N)
+    ge::Vector{SNNFloat}  = (1.5randn(N) .+ 4) .* 10nS
+    gi::Vector{SNNFloat}  = (12randn(N) .+ 20) .* 10nS
     fire::Vector{Bool} = zeros(Bool, N)
-    I::Vector{Float} = zeros(N)
+    I::Vector{SNNFloat} = zeros(N)
     records::Dict = Dict()
 end
 
-@replace function integrate!(p::HH, param::HHParameter, dt::Float)
+function integrate!(p::HH, param::HHParameter, dt::SNNFloat)
+    @unpack N, v, m, n, h, ge, gi, fire, I = p
+    @unpack Cm, gl, El, Ek, En, gn, gk, Vt, τe, τi, Ee, Ei = param
     @inbounds for i = 1:N
         m[i] += dt * (0.32f0 * (13f0 - v[i] + Vt) / (exp((13f0 - v[i] + Vt) / 4f0) - 1f0) * (1f0 - m[i]) -
         0.28f0 * (v[i] - Vt - 40f0) / (exp((v[i] - Vt - 40f0) / 5f0) - 1f0) * m[i])

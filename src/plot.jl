@@ -2,7 +2,7 @@ using StatsBase, Plots
 
 function raster(p)
     fire = p.records[:fire]
-    x, y = Float[], Float[];
+    x, y = SNNFloat[], SNNFloat[];
     for t = eachindex(fire)
         for n in find(fire[t])
             push!(x, t)
@@ -13,8 +13,8 @@ function raster(p)
 end
 
 function raster(P::Array)
-    y0 = Int[0]
-    X = Float[]; Y = Float[]
+    y0 = SNNInt[0]
+    X = SNNFloat[]; Y = SNNFloat[]
     for p in P
         x, y = raster(p)
         append!(X, x)
@@ -45,7 +45,7 @@ end
 
 function windowsize(p)
     A = sum.(p.records[:fire]) / length(p.N)
-    W = round(Int, 0.5p.N / mean(A)) # filter window, unit=1
+    W = round(SNNInt, 0.5p.N / mean(A)) # filter window, unit=1
 end
 
 function density(p, sym)
@@ -93,7 +93,7 @@ end
 function if_curve(model, current; neuron = 1, dt = 0.1ms, duration = 1second)
     E = model(neuron)
     monitor(E, [:fire])
-    f = Float[]
+    f = SNNFloat[]
     for I = current
         clear_records(E)
         E.I = [I]

@@ -1,26 +1,26 @@
-@withkw immutable SpikingSynapseParameter
-    τpre::Float = 20ms
-    τpost::Float = 20ms
-    Wmax::Float = 0.01
-    ΔApre::Float = 0.01 * Wmax
-    ΔApost::Float = -ΔApre * τpre / τpost * 1.05
+@with_kw struct SpikingSynapseParameter
+    τpre::SNNFloat = 20ms
+    τpost::SNNFloat = 20ms
+    Wmax::SNNFloat = 0.01
+    ΔApre::SNNFloat = 0.01 * Wmax
+    ΔApost::SNNFloat = -ΔApre * τpre / τpost * 1.05
 end
 
-@withkw type SpikingSynapse
+@with_kw mutable struct SpikingSynapse
     param::SpikingSynapseParameter = SpikingSynapseParameter()
-    rowptr::Vector{Int} # row pointer of sparse W
-    colptr::Vector{Int} # column pointer of sparse W
-    I::Vector{Int}      # postsynaptic index of W
-    J::Vector{Int}      # presynaptic index of W
-    index::Vector{Int}  # index mapping: W[index[i]] = Wt[i], Wt = sparse(dense(W)')
-    W::Vector{Float}  # synaptic weight
-    tpre::Vector{Float} = zeros(W) # presynaptic spiking time
-    tpost::Vector{Float} = zeros(W) # postsynaptic spiking time
-    Apre::Vector{Float} = zeros(W) # presynaptic trace
-    Apost::Vector{Float} = zeros(W) # postsynaptic trace
+    rowptr::Vector{SNNInt} # row pointer of sparse W
+    colptr::Vector{SNNInt} # column pointer of sparse W
+    I::Vector{SNNInt}      # postsynaptic index of W
+    J::Vector{SNNInt}      # presynaptic index of W
+    index::Vector{SNNInt}  # index mapping: W[index[i]] = Wt[i], Wt = sparse(dense(W)')
+    W::Vector{SNNFloat}  # synaptic weight
+    tpre::Vector{SNNFloat} = simzeros(W) # presynaptic spiking time
+    tpost::Vector{SNNFloat} = simzeros(W) # postsynaptic spiking time
+    Apre::Vector{SNNFloat} = simzeros(W) # presynaptic trace
+    Apost::Vector{SNNFloat} = simzeros(W) # postsynaptic trace
     fireI::Vector{Bool} # postsynaptic firing
     fireJ::Vector{Bool} # presynaptic firing
-    g::Vector{Float} # postsynaptic conductance
+    g::Vector{SNNFloat} # postsynaptic conductance
     records::Dict = Dict()
 end
 
@@ -32,7 +32,8 @@ function SpikingSynapse(pre, post, sym; σ = 0.0, p = 0.0)
     SpikingSynapse(;@symdict(rowptr, colptr, I, J, index, W, fireI, fireJ, g)...)
 end
 
-@replace function forward!(c::SpikingSynapse, param::SpikingSynapseParameter)
+function forward!(c::SpikingSynapse, param::SpikingSynapseParameter)
+    @unpack colptr, I, W, fireJ, g = c
     @inbounds for j in 1:(length(colptr) - 1)
         if fireJ[j]
             for s in colptr[j]:(colptr[j+1] - 1)
@@ -42,7 +43,9 @@ end
     end
 end
 
-@replace function plasticity!(c::SpikingSynapse, param::SpikingSynapseParameter, dt::Float, t::Float)
+function plasticity!(c::SpikingSynapse, param::SpikingSynapseParameter, dt::SNNFloat, t::SNNFloat)
+    @unpack rowptr, colptr, I, J, index, W, tpre, tpost, Apre, Apost, fireI, fireJ, g = c
+    @unpack τpre, τpost, Wmax, ΔApre, ΔApost = param
     @inbounds for j in 1:(length(colptr) - 1)
         if fireJ[j]
             for s in colptr[j]:(colptr[j+1] - 1)

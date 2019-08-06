@@ -1,22 +1,26 @@
+simzeros(W) = fill!(similar(W), 0)
+
 function connect!(c, j, i, σ = 1e-6)
     W = sparse(c.I, c.J, c.W, length(c.rowptr) - 1, length(c.colptr) - 1)
-    W[vec(i), vec(j)] = σ * randn(length(i), length(j))
+    W[i, j] = σ * randn(SNNFloat)
     c.rowptr, c.colptr, c.I, c.J, c.index, c.W = dsparse(W)
-    c.tpre, c.tpost, c.Apre, c.Apost = zeros(c.W), zeros(c.W), zeros(c.W), zeros(c.W)
+    c.tpre, c.tpost, c.Apre, c.Apost = simzeros(c.W), simzeros(c.W), simzeros(c.W), simzeros(c.W)
     return nothing
 end
 
 function dsparse(A)
-    At = A'
+    At = sparse(A')
     colptr = A.colptr
     rowptr = At.colptr
     I = rowvals(A)
     V = nonzeros(A)
-    J = zeros(I)
+    J = simzeros(I)
+    # FIXME: Breaks when A is empty
     for j in 1:(length(colptr) - 1)
-        J[colptr[j]:(colptr[j+1] - 1)] = j
+        J[colptr[j]:(colptr[j+1] - 1)] .= j
     end
-    index = zeros(I); coldown = zeros(eltype(index), length(colptr) - 1)
+    index = zeros(size(I))
+    coldown = zeros(eltype(index), length(colptr) - 1)
     for i in 1:(length(rowptr) - 1)
         for st in rowptr[i]:(rowptr[i+1] - 1)
             j = At.rowval[st]
@@ -71,17 +75,27 @@ function clear_records(obj)
     end
 end
 
-@inline function exp32(x::Float)
+@inline function exp32(x::SNNFloat)
     x = ifelse(x < -10f0, -32f0, x)
     x = 1f0 + x / 32f0
     x *= x; x *= x; x *= x; x *= x; x *= x
     return x
 end
 
-@inline function exp256(x::Float)
+@inline function exp256(x::SNNFloat)
     x = ifelse(x < -10f0, -256f0, x)
     x = 1.0 + x / 256.0
     x *= x; x *= x; x *= x; x *= x
     x *= x; x *= x; x *= x; x *= x
     return x
+end
+
+macro symdict(x...)
+    ex = Expr(:block)
+    push!(ex.args, :(d = Dict{Symbol,Any}()))
+    for p in x
+        push!(ex.args, :(d[$(QuoteNode(p))] = $(esc(p))))
+    end
+    push!(ex.args, :(d))
+    return ex
 end

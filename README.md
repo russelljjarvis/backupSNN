@@ -1,7 +1,7 @@
 # Installation
 
 ```julia
-] add https://github.com/jpsamaroo/SpikingNeuralNetworks.jl
+] add https://github.com/AStupidBear/SpikingNeuralNetworks.jl
 ```
 
 # Documentation

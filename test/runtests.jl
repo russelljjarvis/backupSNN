@@ -1,5 +1,6 @@
 #using Plots; plotly()
-using SNN
+using SpikingNeuralNetworks
+const SNN = SpikingNeuralNetworks
 #using Unitful
 #using Unitful.DefaultSymbols
 include(joinpath(@__DIR__, "..", "src", "units.jl")) # FIXME

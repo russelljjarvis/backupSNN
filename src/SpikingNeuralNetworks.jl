@@ -1,4 +1,6 @@
-module SNN
+module SpikingNeuralNetworks
+
+const SNN = SpikingNeuralNetworks
 
 using SparseArrays
 using Reexport

@@ -1,16 +1,16 @@
-@withkw @trait immutable PoissonParameter
-    rate::Float = 1Hz
+@with_kw struct PoissonParameter
+    rate::SNNFloat = 1Hz
 end
 
-@withkw @trait type Poisson
+@with_kw mutable struct Poisson
     param::PoissonParameter = PoissonParameter()
-    N::Int = 100
-    randcache::Vector{Float} = rand(N)
+    N::SNNInt = 100
+    randcache::Vector{SNNFloat} = rand(N)
     fire::Vector{Bool} = zeros(Bool, N)
     records::Dict = Dict()
 end
 
-@replace function integrate!(p::Poisson, param::PoissonParameter, dt::Float)
+function integrate!(p::Poisson, param::PoissonParameter, dt::SNNFloat)
     prob = rate * dt
     rand!(randcache)
     @inbounds for i = 1:N

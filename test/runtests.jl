@@ -1,12 +1,17 @@
-using Plots, SNN; plotly()
-include("../examples/chain.jl")
-include("../examples/hh_net.jl")
-include("../examples/hh_neuron.jl")
-include("../examples/if_net.jl")
-include("../examples/if_neuron.jl")
-include("../examples/iz_net.jl")
-include("../examples/iz_neuron.jl")
-include("../examples/oja.jl")
-include("../examples/rate_net.jl")
-include("../examples/stdp_demo.jl")
-include("../examples/stdp_song.jl")
+#using Plots; plotly()
+using SNN
+#using Unitful
+#using Unitful.DefaultSymbols
+include(joinpath(@__DIR__, "..", "src", "units.jl")) # FIXME
+
+include("chain.jl")
+include("hh_net.jl")
+include("hh_neuron.jl")
+include("if_net.jl")
+include("if_neuron.jl")
+include("iz_net.jl")
+include("iz_neuron.jl")
+include("oja.jl")
+include("rate_net.jl")
+include("stdp_demo.jl")
+# FIXME: include("stdp_song.jl")

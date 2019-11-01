@@ -1,17 +1,18 @@
-immutable RateParameter
+struct RateParameter
 end
 
-@withkw type Rate
+@with_kw mutable struct Rate
     param::RateParameter = RateParameter()
-    N::Int = 100
-    x::Vector{Float} = 0.5randn(N)
-    r::Vector{Float} = tanh(x)
-    g::Vector{Float} = zeros(N)
-    I::Vector{Float} = zeros(N)
+    N::SNNInt = 100
+    x::Vector{SNNFloat} = 0.5randn(N)
+    r::Vector{SNNFloat} = tanh.(x)
+    g::Vector{SNNFloat} = zeros(N)
+    I::Vector{SNNFloat} = zeros(N)
     records::Dict = Dict()
 end
 
-@replace function integrate!(p::Rate, param::RateParameter, dt::Float)
+function integrate!(p::Rate, param::RateParameter, dt::SNNFloat)
+    @unpack N, x, r, g, I = p
     @inbounds for i = 1:N
         x[i] += dt * (-x[i] + g[i] + I[i])
         r[i] = tanh(x[i]) #max(0, x[i])

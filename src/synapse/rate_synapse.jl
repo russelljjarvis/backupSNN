@@ -1,15 +1,15 @@
-@withkw immutable RateSynapseParameter
-    lr::Float = 1e-3
+@with_kw struct RateSynapseParameter
+    lr::SNNFloat = 1e-3
 end
 
-@withkw type RateSynapse
+@with_kw mutable struct RateSynapse
     param::RateSynapseParameter = RateSynapseParameter()
-    colptr::Vector{Int} # column pointer of sparse W
-    I::Vector{Int}      # postsynaptic index of W
-    W::Vector{Float}  # synaptic weight
-    rI::Vector{Float} # postsynaptic rate
-    rJ::Vector{Float} # presynaptic rate
-    g::Vector{Float}  # postsynaptic conductance
+    colptr::Vector{SNNInt} # column pointer of sparse W
+    I::Vector{SNNInt}      # postsynaptic index of W
+    W::Vector{SNNFloat}  # synaptic weight
+    rI::Vector{SNNFloat} # postsynaptic rate
+    rJ::Vector{SNNFloat} # presynaptic rate
+    g::Vector{SNNFloat}  # postsynaptic conductance
     records::Dict = Dict()
 end
 
@@ -20,7 +20,9 @@ function RateSynapse(pre, post; σ = 0.0, p = 0.0)
     RateSynapse(;@symdict(colptr, I, W, rI, rJ, g)...)
 end
 
-@replace function forward!(c::RateSynapse, param::RateSynapseParameter)
+function forward!(c::RateSynapse, param::RateSynapseParameter)
+    @unpack colptr, I, W, rI, rJ, g = c
+    @unpack lr = param
     fill!(g, zero(eltype(g)))
     @inbounds for j in 1:(length(colptr) - 1)
         rJj = rJ[j]
@@ -30,10 +32,12 @@ end
     end
 end
 
-@replace function plasticity!(c::RateSynapse, param::RateSynapseParameter, dt::Float, t::Float)
+function plasticity!(c::RateSynapse, param::RateSynapseParameter, dt::SNNFloat, t::SNNFloat)
+    @unpack colptr, I, W, rI, rJ, g = c
+    @unpack lr = param
     @inbounds for j in 1:(length(colptr) - 1)
         s_row = colptr[j]:(colptr[j+1] - 1)
-        rIW = zero(Float)
+        rIW = zero(SNNFloat)
         for s in s_row
             rIW += rI[I[s]] * W[s]
         end

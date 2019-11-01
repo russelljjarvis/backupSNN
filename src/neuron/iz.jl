@@ -1,21 +1,23 @@
-@withkw immutable IZParameter
-    a::Float = 0.01
-    b::Float = 0.2
-    c::Float = -65
-    d::Float = 2
+@with_kw struct IZParameter
+    a::SNNFloat = 0.01
+    b::SNNFloat = 0.2
+    c::SNNFloat = -65
+    d::SNNFloat = 2
 end
 
-@withkw type IZ
+@with_kw mutable struct IZ
     param::IZParameter = IZParameter()
-    N::Int = 100
-    v::Vector{Float} = fill(-65.0, N)
-    u::Vector{Float} = param.b * v
+    N::SNNInt = 100
+    v::Vector{SNNFloat} = fill(-65.0, N)
+    u::Vector{SNNFloat} = param.b * v
     fire::Vector{Bool} = zeros(Bool, N)
-    I::Vector{Float} = zeros(N)
+    I::Vector{SNNFloat} = zeros(N)
     records::Dict = Dict()
 end
 
-@replace function integrate!(p::IZ, param::IZParameter, dt::Float)
+function integrate!(p::IZ, param::IZParameter, dt::SNNFloat)
+    @unpack N, v, u, fire, I = p
+    @unpack a, b, c, d = param
     @inbounds for i = 1:N
         v[i] += 0.5f0dt * (0.04f0v[i]^2 + 5f0v[i] + 140f0 - u[i] + I[i])
         v[i] += 0.5f0dt * (0.04f0v[i]^2 + 5f0v[i] + 140f0 - u[i] + I[i])

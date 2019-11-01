@@ -1,10 +1,15 @@
 module SNN
 
+using SparseArrays
 using Reexport
-@reexport using Utils
+using Parameters
+using Requires
+#using Unitful
+#using Unitful.DefaultSymbols
+#@reexport using Utils
 
-const Int = Int32
-const Float = Float32
+const SNNInt = Int32
+const SNNFloat = Float32
 # srand(1000)
 
 include("units.jl")
@@ -26,6 +31,9 @@ include("synapse/pinning_full_synapse.jl")
 include("synapse/fl_full_synapse.jl")
 # include("synapse/fl_synapse.jl")
 
-isdefined(Main, :Plots) && include("plot.jl")
+@require Plots="91a5bcdd-55d7-5caf-9e0b-520d859cae80" begin
+    # FIXME: Also require StatsBase
+    include("plot.jl")
+end
 
 end

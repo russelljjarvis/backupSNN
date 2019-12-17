@@ -1,28 +1,28 @@
-metre = 1e2
-meter = metre
-cm = metre / 1e2
-mm = metre / 1e3
-um = metre / 1e6
-nm = metre / 1e9
+const metre = 1e2
+const meter = metre
+const cm = metre / 1e2
+const mm = metre / 1e3
+const um = metre / 1e6
+const nm = metre / 1e9
 
-second = 1e3
-ms = second / 1e3
-Hz = 1 / second
+const second = 1e3
+const ms = second / 1e3
+const Hz = 1 / second
 
-voltage = 1e3
-mV = voltage / 1e3
+const voltage = 1e3
+const mV = voltage / 1e3
 
-ampere = 1e6
-mA = ampere / 1e3
-uA = ampere / 1e6
-nA = ampere / 1e9
+const ampere = 1e6
+const mA = ampere / 1e3
+const uA = ampere / 1e6
+const nA = ampere / 1e9
 
-farad=1e6
-uF = farad/1e6
-ufarad = uF
+const farad=1e6
+const uF = farad/1e6
+const ufarad = uF
 
-siemens = 1e3
-mS = siemens / 1e3
-msiemens = mS
-nS = siemens / 1e9
-nsiemens = nS
+const siemens = 1e3
+const mS = siemens / 1e3
+const msiemens = mS
+const nS = siemens / 1e9
+const nsiemens = nS

@@ -1,10 +1,8 @@
-simzeros(W) = fill!(similar(W), 0)
-
 function connect!(c, j, i, σ = 1e-6)
     W = sparse(c.I, c.J, c.W, length(c.rowptr) - 1, length(c.colptr) - 1)
     W[i, j] = σ * randn(SNNFloat)
     c.rowptr, c.colptr, c.I, c.J, c.index, c.W = dsparse(W)
-    c.tpre, c.tpost, c.Apre, c.Apost = simzeros(c.W), simzeros(c.W), simzeros(c.W), simzeros(c.W)
+    c.tpre, c.tpost, c.Apre, c.Apost = zero(c.W), zero(c.W), zero(c.W), zero(c.W)
     return nothing
 end
 
@@ -14,7 +12,7 @@ function dsparse(A)
     rowptr = At.colptr
     I = rowvals(A)
     V = nonzeros(A)
-    J = simzeros(I)
+    J = zero(I)
     # FIXME: Breaks when A is empty
     for j in 1:(length(colptr) - 1)
         J[colptr[j]:(colptr[j+1] - 1)] .= j

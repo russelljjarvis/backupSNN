@@ -14,10 +14,10 @@ end
     J::Vector{SNNInt}      # presynaptic index of W
     index::Vector{SNNInt}  # index mapping: W[index[i]] = Wt[i], Wt = sparse(dense(W)')
     W::Vector{SNNFloat}  # synaptic weight
-    tpre::Vector{SNNFloat} = simzeros(W) # presynaptic spiking time
-    tpost::Vector{SNNFloat} = simzeros(W) # postsynaptic spiking time
-    Apre::Vector{SNNFloat} = simzeros(W) # presynaptic trace
-    Apost::Vector{SNNFloat} = simzeros(W) # postsynaptic trace
+    tpre::Vector{SNNFloat} = zero(W) # presynaptic spiking time
+    tpost::Vector{SNNFloat} = zero(W) # postsynaptic spiking time
+    Apre::Vector{SNNFloat} = zero(W) # presynaptic trace
+    Apost::Vector{SNNFloat} = zero(W) # postsynaptic trace
     fireI::Vector{Bool} # postsynaptic firing
     fireJ::Vector{Bool} # presynaptic firing
     g::Vector{SNNFloat} # postsynaptic conductance

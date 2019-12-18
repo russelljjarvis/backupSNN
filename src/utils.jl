@@ -82,7 +82,7 @@ end
 
 @inline function exp256(x::SNNFloat)
     x = ifelse(x < -10f0, -256f0, x)
-    x = 1.0 + x / 256.0
+    x = 1.0f0 + x / 256.0f0
     x *= x; x *= x; x *= x; x *= x
     x *= x; x *= x; x *= x; x *= x
     return x

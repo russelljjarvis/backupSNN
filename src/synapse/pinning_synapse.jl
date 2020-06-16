@@ -1,17 +1,17 @@
 struct PINningSynapseParameter
 end
 
-@with_kw mutable struct PINningSynapse
+@snn_kw mutable struct PINningSynapse
     param::PINningSynapseParameter = PINningSynapseParameter()
-    colptr::Vector{SNNInt} # column pointer of sparse W
-    I::Vector{SNNInt}      # postsynaptic index of W
-    W::Vector{SNNFloat}  # synaptic weight
-    rI::Vector{SNNFloat} # postsynaptic rate
-    rJ::Vector{SNNFloat} # presynaptic rate
-    g::Vector{SNNFloat}  # postsynaptic conductance
-    P::Vector{SNNFloat}  # <rᵢrⱼ>⁻¹
-    q::Vector{SNNFloat}  # P * r
-    f::Vector{SNNFloat}  # postsynaptic traget
+    colptr::Vector{Int32} # column pointer of sparse W
+    I::Vector{Int32}      # postsynaptic index of W
+    W::Vector{Float32}  # synaptic weight
+    rI::Vector{Float32} # postsynaptic rate
+    rJ::Vector{Float32} # presynaptic rate
+    g::Vector{Float32}  # postsynaptic conductance
+    P::Vector{Float32}  # <rᵢrⱼ>⁻¹
+    q::Vector{Float32}  # P * r
+    f::Vector{Float32}  # postsynaptic traget
     records::Dict = Dict()
 end
 
@@ -25,8 +25,8 @@ function PINningSynapse(pre, post; σ = 1.5, p = 0.0, α = 1)
 end
 
 function forward!(c::PINningSynapse, param::PINningSynapseParameter)
-    fill!(q, zero(SNNFloat))
-    fill!(g, zero(SNNFloat))
+    fill!(q, zero(Float32))
+    fill!(g, zero(Float32))
     @inbounds for j in 1:(length(colptr) - 1)
         rJj = rJ[j]
         for s = colptr[j]:(colptr[j+1] - 1)
@@ -37,7 +37,7 @@ function forward!(c::PINningSynapse, param::PINningSynapseParameter)
     end
 end
 
-function plasticity!(c::PINningSynapse, param::PINningSynapseParameter, dt::SNNFloat, t::SNNFloat)
+function plasticity!(c::PINningSynapse, param::PINningSynapseParameter, dt::Float32, t::Float32)
     C = 1 / (1 + dot(q, rI))
     @inbounds for j in 1:(length(colptr) - 1)
         for s in colptr[j]:(colptr[j+1] - 1)

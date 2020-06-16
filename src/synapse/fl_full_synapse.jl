@@ -1,18 +1,18 @@
 struct FLSynapseParameter
 end
 
-@with_kw mutable struct FLSynapse
+@snn_kw mutable struct FLSynapse
     param::FLSynapseParameter = FLSynapseParameter()
-    W::Matrix{SNNFloat}  # synaptic weight
-    rI::Vector{SNNFloat} # postsynaptic rate
-    rJ::Vector{SNNFloat} # presynaptic rate
-    g::Vector{SNNFloat}  # postsynaptic conductance
-    P::Matrix{SNNFloat}  # <rᵢrⱼ>⁻¹
-    q::Vector{SNNFloat}  # P * r
-    u::Vector{SNNFloat} # force weight
-    w::Vector{SNNFloat} # output weight
-    f::SNNFloat = 0 # postsynaptic traget
-    z::SNNFloat = 0.5randn()  # output z ≈ f
+    W::Matrix{Float32}  # synaptic weight
+    rI::Vector{Float32} # postsynaptic rate
+    rJ::Vector{Float32} # presynaptic rate
+    g::Vector{Float32}  # postsynaptic conductance
+    P::Matrix{Float32}  # <rᵢrⱼ>⁻¹
+    q::Vector{Float32}  # P * r
+    u::Vector{Float32} # force weight
+    w::Vector{Float32} # output weight
+    f::Float32 = 0 # postsynaptic traget
+    z::Float32 = 0.5randn()  # output z ≈ f
     records::Dict = Dict()
 end
 
@@ -33,7 +33,7 @@ function forward!(c::FLSynapse, param::FLSynapseParameter)
     BLAS.axpy!(z, u, g)
 end
 
-function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::SNNFloat, t::SNNFloat)
+function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::Float32, t::Float32)
     C = 1 / (1 + dot(q, rI))
     BLAS.axpy!(C * (f - z), q, w)
     BLAS.ger!(-C, q, q, P)

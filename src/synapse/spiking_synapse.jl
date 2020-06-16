@@ -1,26 +1,26 @@
-@with_kw struct SpikingSynapseParameter
-    τpre::SNNFloat = 20ms
-    τpost::SNNFloat = 20ms
-    Wmax::SNNFloat = 0.01
-    ΔApre::SNNFloat = 0.01 * Wmax
-    ΔApost::SNNFloat = -ΔApre * τpre / τpost * 1.05
+@snn_kw struct SpikingSynapseParameter
+    τpre::Float32 = 20ms
+    τpost::Float32 = 20ms
+    Wmax::Float32 = 0.01
+    ΔApre::Float32 = 0.01 * Wmax
+    ΔApost::Float32 = -ΔApre * τpre / τpost * 1.05
 end
 
-@with_kw mutable struct SpikingSynapse
+@snn_kw mutable struct SpikingSynapse
     param::SpikingSynapseParameter = SpikingSynapseParameter()
-    rowptr::Vector{SNNInt} # row pointer of sparse W
-    colptr::Vector{SNNInt} # column pointer of sparse W
-    I::Vector{SNNInt}      # postsynaptic index of W
-    J::Vector{SNNInt}      # presynaptic index of W
-    index::Vector{SNNInt}  # index mapping: W[index[i]] = Wt[i], Wt = sparse(dense(W)')
-    W::Vector{SNNFloat}  # synaptic weight
-    tpre::Vector{SNNFloat} = zero(W) # presynaptic spiking time
-    tpost::Vector{SNNFloat} = zero(W) # postsynaptic spiking time
-    Apre::Vector{SNNFloat} = zero(W) # presynaptic trace
-    Apost::Vector{SNNFloat} = zero(W) # postsynaptic trace
+    rowptr::Vector{Int32} # row pointer of sparse W
+    colptr::Vector{Int32} # column pointer of sparse W
+    I::Vector{Int32}      # postsynaptic index of W
+    J::Vector{Int32}      # presynaptic index of W
+    index::Vector{Int32}  # index mapping: W[index[i]] = Wt[i], Wt = sparse(dense(W)')
+    W::Vector{Float32}  # synaptic weight
+    tpre::Vector{Float32} = zero(W) # presynaptic spiking time
+    tpost::Vector{Float32} = zero(W) # postsynaptic spiking time
+    Apre::Vector{Float32} = zero(W) # presynaptic trace
+    Apost::Vector{Float32} = zero(W) # postsynaptic trace
     fireI::Vector{Bool} # postsynaptic firing
     fireJ::Vector{Bool} # presynaptic firing
-    g::Vector{SNNFloat} # postsynaptic conductance
+    g::Vector{Float32} # postsynaptic conductance
     records::Dict = Dict()
 end
 
@@ -43,7 +43,7 @@ function forward!(c::SpikingSynapse, param::SpikingSynapseParameter)
     end
 end
 
-function plasticity!(c::SpikingSynapse, param::SpikingSynapseParameter, dt::SNNFloat, t::SNNFloat)
+function plasticity!(c::SpikingSynapse, param::SpikingSynapseParameter, dt::Float32, t::Float32)
     @unpack rowptr, colptr, I, J, index, W, tpre, tpost, Apre, Apost, fireI, fireJ, g = c
     @unpack τpre, τpost, Wmax, ΔApre, ΔApost = param
     @inbounds for j in 1:(length(colptr) - 1)

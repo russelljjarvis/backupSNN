@@ -1,20 +1,20 @@
 struct FLSynapseParameter
 end
 
-@with_kw mutable struct FLSynapse
+@snn_kw mutable struct FLSynapse
     param::FLSynapseParameter = FLSynapseParameter()
-    colptr::Vector{SNNInt} # column pointer of sparse W
-    I::Vector{SNNInt}      # postsynaptic index of W
-    W::Vector{SNNFloat}  # synaptic weight
-    rI::Vector{SNNFloat} # postsynaptic rate
-    rJ::Vector{SNNFloat} # presynaptic rate
-    g::Vector{SNNFloat}  # postsynaptic conductance
-    P::Vector{SNNFloat}  # <rᵢrⱼ>⁻¹
-    q::Vector{SNNFloat}  # P * r
-    u::Vector{SNNFloat} # force weight
-    w::Vector{SNNFloat} # output weight
-    f::SNNFloat = 0 # postsynaptic traget
-    z::SNNFloat = 0.5randn()  # output z ≈ f
+    colptr::Vector{Int32} # column pointer of sparse W
+    I::Vector{Int32}      # postsynaptic index of W
+    W::Vector{Float32}  # synaptic weight
+    rI::Vector{Float32} # postsynaptic rate
+    rJ::Vector{Float32} # presynaptic rate
+    g::Vector{Float32}  # postsynaptic conductance
+    P::Vector{Float32}  # <rᵢrⱼ>⁻¹
+    q::Vector{Float32}  # P * r
+    u::Vector{Float32} # force weight
+    w::Vector{Float32} # output weight
+    f::Float32 = 0 # postsynaptic traget
+    z::Float32 = 0.5randn()  # output z ≈ f
     records::Dict = Dict()
 end
 
@@ -32,7 +32,7 @@ end
 function forward!(c::FLSynapse, param::FLSynapseParameter)
     z = dot(w, rI)
     g .= z .* u
-    fill!(q, zero(SNNFloat))
+    fill!(q, zero(Float32))
     @inbounds for j in 1:(length(colptr) - 1)
         rJj = rJ[j]
         for s = colptr[j]:(colptr[j+1] - 1)
@@ -43,7 +43,7 @@ function forward!(c::FLSynapse, param::FLSynapseParameter)
     end
 end
 
-function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::SNNFloat, t::SNNFloat)
+function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::Float32, t::Float32)
     C = 1 / (1 + dot(q, rI))
     BLAS.axpy!(C * (f - z), q, w)
     @inbounds for j in 1:(length(colptr) - 1)

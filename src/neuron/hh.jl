@@ -1,33 +1,33 @@
-@with_kw struct HHParameter
-    Cm::SNNFloat = 1uF * cm^(-2) * 20000um^2
-    gl::SNNFloat = 5e-5siemens * cm^(-2) * 20000um^2
-    El::SNNFloat = -65mV
-    Ek::SNNFloat = -90mV
-    En::SNNFloat = 50mV
-    gn::SNNFloat = 100msiemens * cm^(-2) * 20000um^2
-    gk::SNNFloat = 30msiemens * cm^(-2) * 20000um^2
-    Vt::SNNFloat = -63mV
-    τe::SNNFloat = 5ms
-    τi::SNNFloat = 10ms
-    Ee::SNNFloat = 0mV
-    Ei::SNNFloat = -80mV
+@snn_kw struct HHParameter
+    Cm::Float32 = 1uF * cm^(-2) * 20000um^2
+    gl::Float32 = 5e-5siemens * cm^(-2) * 20000um^2
+    El::Float32 = -65mV
+    Ek::Float32 = -90mV
+    En::Float32 = 50mV
+    gn::Float32 = 100msiemens * cm^(-2) * 20000um^2
+    gk::Float32 = 30msiemens * cm^(-2) * 20000um^2
+    Vt::Float32 = -63mV
+    τe::Float32 = 5ms
+    τi::Float32 = 10ms
+    Ee::Float32 = 0mV
+    Ei::Float32 = -80mV
 end
 
-@with_kw mutable struct HH
+@snn_kw mutable struct HH
     param::HHParameter = HHParameter()
-    N::SNNInt = 100
-    v::Vector{SNNFloat} = param.El .+ 5(randn(N) .- 1)
-    m::Vector{SNNFloat} = zeros(N)
-    n::Vector{SNNFloat} = zeros(N)
-    h::Vector{SNNFloat} = ones(N)
-    ge::Vector{SNNFloat}  = (1.5randn(N) .+ 4) .* 10nS
-    gi::Vector{SNNFloat}  = (12randn(N) .+ 20) .* 10nS
+    N::Int32 = 100
+    v::Vector{Float32} = param.El .+ 5(randn(N) .- 1)
+    m::Vector{Float32} = zeros(N)
+    n::Vector{Float32} = zeros(N)
+    h::Vector{Float32} = ones(N)
+    ge::Vector{Float32}  = (1.5randn(N) .+ 4) .* 10nS
+    gi::Vector{Float32}  = (12randn(N) .+ 20) .* 10nS
     fire::Vector{Bool} = zeros(Bool, N)
-    I::Vector{SNNFloat} = zeros(N)
+    I::Vector{Float32} = zeros(N)
     records::Dict = Dict()
 end
 
-function integrate!(p::HH, param::HHParameter, dt::SNNFloat)
+function integrate!(p::HH, param::HHParameter, dt::Float32)
     @unpack N, v, m, n, h, ge, gi, fire, I = p
     @unpack Cm, gl, El, Ek, En, gn, gk, Vt, τe, τi, Ee, Ei = param
     @inbounds for i = 1:N

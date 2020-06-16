@@ -1,15 +1,15 @@
 struct PINningSynapseParameter
 end
 
-@with_kw mutable struct PINningSynapse
+@snn_kw mutable struct PINningSynapse
     param::PINningSynapseParameter = PINningSynapseParameter()
-    W::Matrix{SNNFloat}  # synaptic weight
-    rI::Vector{SNNFloat} # postsynaptic rate
-    rJ::Vector{SNNFloat} # presynaptic rate
-    g::Vector{SNNFloat}  # postsynaptic conductance
-    P::Matrix{SNNFloat}  # <rᵢrⱼ>⁻¹
-    q::Vector{SNNFloat}  # P * r
-    f::Vector{SNNFloat}  # postsynaptic traget
+    W::Matrix{Float32}  # synaptic weight
+    rI::Vector{Float32} # postsynaptic rate
+    rJ::Vector{Float32} # presynaptic rate
+    g::Vector{Float32}  # postsynaptic conductance
+    P::Matrix{Float32}  # <rᵢrⱼ>⁻¹
+    q::Vector{Float32}  # P * r
+    f::Vector{Float32}  # postsynaptic traget
     records::Dict = Dict()
 end
 
@@ -26,7 +26,7 @@ function forward!(c::PINningSynapse, param::PINningSynapseParameter)
     BLAS.A_mul_B!(g, W, rJ)
 end
 
-function plasticity!(c::PINningSynapse, param::PINningSynapseParameter, dt::SNNFloat, t::SNNFloat)
+function plasticity!(c::PINningSynapse, param::PINningSynapseParameter, dt::Float32, t::Float32)
     C = 1 / (1 + dot(q, rI))
     BLAS.ger!(C, f - g, q, W)
     BLAS.ger!(-C, q, q, P)

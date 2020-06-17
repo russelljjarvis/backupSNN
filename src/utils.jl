@@ -102,11 +102,14 @@ snn_kw_str_param(x::Symbol) = (x,)
 function snn_kw_str_param(x::Expr)
     if x.head == :(<:)
         return (x.args...,)
-    elseif x.head == :(=) && x.args[1].head == :(<:)
-        return (x.args[1].args..., x.args[2])
-    else
-        error("Can't handle param Expr: $x")
+    elseif x.head == :(=)
+        if x.args[1] isa Expr && x.args[1].head == :(<:)
+            return (x.args[1].args..., x.args[2])
+        elseif x.args[1] isa Symbol
+            return (x.args[1], Any, x.args[2])
+        end
     end
+    error("Can't handle param Expr: $x")
 end
 snn_kw_str_field(x::Symbol) = (x,)
 function snn_kw_str_field(x::Expr)
@@ -114,9 +117,8 @@ function snn_kw_str_field(x::Expr)
         return (x.args...,)
     elseif x.head == :(=)
         return (x.args[1].args[1:2]..., x.args[2])
-    else
-        error("Can't handle field Expr: $x")
     end
+    error("Can't handle field Expr: $x")
 end
 function snn_kw_str_kws(x::Tuple)
     if 1 <= length(x) <= 2
@@ -164,13 +166,9 @@ macro snn_kw(str)
         str_params = map(snn_kw_str_param, str.args[2].args[2:end])
     end
     @assert str_name isa Symbol
+    @assert str_abs isa Union{Symbol,Nothing}
     str_fields = map(snn_kw_str_field, filter(x->!(x isa LineNumberNode),
                                           str.args[3].args))
-
-    # Replace abstract type
-    if str_abs !== nothing
-        str.args[2] = Expr(:(<:), str.args[2], str_abs)
-    end
 
     # Remove default type params
     if length(str_params) > 0
@@ -200,6 +198,11 @@ macro snn_kw(str)
         end
     end
 
+    # Replace abstract type
+    if str_abs !== nothing
+        str.args[2] = Expr(:(<:), str.args[2], str_abs)
+    end
+
     # Use sentinels to track if type param kwargs are assigned
     ctor_params = snn_kw_str_sentinels.(str_params)
     ctor_params_bodies = snn_kw_str_sentinel_check.(str_params)
@@ -219,6 +222,8 @@ macro snn_kw(str)
                      Expr(:call, ctor_call, first.(str_fields)...))
     ctor = Expr(:function, ctor_sig, ctor_body)
 
+    @show str_name
+    @show str
     return quote
         $(esc(str))
         $(esc(ctor))

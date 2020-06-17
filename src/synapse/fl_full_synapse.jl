@@ -1,18 +1,18 @@
 struct FLSynapseParameter
 end
 
-@snn_kw mutable struct FLSynapse
+@snn_kw mutable struct FLSynapse{MFT=Matrix{Float32},VFT=Vector{Float32},FT=Float32}
     param::FLSynapseParameter = FLSynapseParameter()
-    W::Matrix{Float32}  # synaptic weight
-    rI::Vector{Float32} # postsynaptic rate
-    rJ::Vector{Float32} # presynaptic rate
-    g::Vector{Float32}  # postsynaptic conductance
-    P::Matrix{Float32}  # <rᵢrⱼ>⁻¹
-    q::Vector{Float32}  # P * r
-    u::Vector{Float32} # force weight
-    w::Vector{Float32} # output weight
-    f::Float32 = 0 # postsynaptic traget
-    z::Float32 = 0.5randn()  # output z ≈ f
+    W::MFT  # synaptic weight
+    rI::VFT # postsynaptic rate
+    rJ::VFT # presynaptic rate
+    g::VFT  # postsynaptic conductance
+    P::MFT  # <rᵢrⱼ>⁻¹
+    q::VFT  # P * r
+    u::VFT # force weight
+    w::VFT # output weight
+    f::FT = 0 # postsynaptic traget
+    z::FT = 0.5randn()  # output z ≈ f
     records::Dict = Dict()
 end
 

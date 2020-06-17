@@ -1,17 +1,17 @@
 struct PINningSynapseParameter
 end
 
-@snn_kw mutable struct PINningSynapse
+@snn_kw mutable struct PINningSynapse{VIT=Vector{Int32},VFT=Vector{Float32}}
     param::PINningSynapseParameter = PINningSynapseParameter()
-    colptr::Vector{Int32} # column pointer of sparse W
-    I::Vector{Int32}      # postsynaptic index of W
-    W::Vector{Float32}  # synaptic weight
-    rI::Vector{Float32} # postsynaptic rate
-    rJ::Vector{Float32} # presynaptic rate
-    g::Vector{Float32}  # postsynaptic conductance
-    P::Vector{Float32}  # <rᵢrⱼ>⁻¹
-    q::Vector{Float32}  # P * r
-    f::Vector{Float32}  # postsynaptic traget
+    colptr::VIT # column pointer of sparse W
+    I::VIT      # postsynaptic index of W
+    W::VFT  # synaptic weight
+    rI::VFT # postsynaptic rate
+    rJ::VFT # presynaptic rate
+    g::VFT  # postsynaptic conductance
+    P::VFT  # <rᵢrⱼ>⁻¹
+    q::VFT  # P * r
+    f::VFT  # postsynaptic traget
     records::Dict = Dict()
 end
 

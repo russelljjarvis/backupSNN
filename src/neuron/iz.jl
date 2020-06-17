@@ -1,17 +1,17 @@
-@snn_kw struct IZParameter
-    a::Float32 = 0.01
-    b::Float32 = 0.2
-    c::Float32 = -65
-    d::Float32 = 2
+@snn_kw struct IZParameter{FT=Float32}
+    a::FT = 0.01
+    b::FT = 0.2
+    c::FT = -65
+    d::FT = 2
 end
 
-@snn_kw mutable struct IZ
+@snn_kw mutable struct IZ{FT=Vector{Float32},BT=Vector{Bool}}
     param::IZParameter = IZParameter()
     N::Int32 = 100
-    v::Vector{Float32} = fill(-65.0, N)
-    u::Vector{Float32} = param.b * v
-    fire::Vector{Bool} = zeros(Bool, N)
-    I::Vector{Float32} = zeros(N)
+    v::FT = fill(-65.0, N)
+    u::FT = param.b * v
+    fire::BT = zeros(Bool, N)
+    I::FT = zeros(N)
     records::Dict = Dict()
 end
 

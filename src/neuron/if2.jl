@@ -1,6 +1,6 @@
-@snn_kw struct IF2Parameter <: AbstractIFParameter
-    Ee::Float32 = 0mV
-    Ei::Float32 = 0mV
+@snn_kw struct IF2Parameter{FT=Float32} <: AbstractIFParameter
+    Ee::FT = 0mV
+    Ei::FT = 0mV
 end
 
 @snn_kw mutable struct IF2 <: AbstractIF

@@ -1,29 +1,29 @@
-@snn_kw struct HHParameter
-    Cm::Float32 = 1uF * cm^(-2) * 20000um^2
-    gl::Float32 = 5e-5siemens * cm^(-2) * 20000um^2
-    El::Float32 = -65mV
-    Ek::Float32 = -90mV
-    En::Float32 = 50mV
-    gn::Float32 = 100msiemens * cm^(-2) * 20000um^2
-    gk::Float32 = 30msiemens * cm^(-2) * 20000um^2
-    Vt::Float32 = -63mV
-    τe::Float32 = 5ms
-    τi::Float32 = 10ms
-    Ee::Float32 = 0mV
-    Ei::Float32 = -80mV
+@snn_kw struct HHParameter{FT=Float32}
+    Cm::FT = 1uF * cm^(-2) * 20000um^2
+    gl::FT = 5e-5siemens * cm^(-2) * 20000um^2
+    El::FT = -65mV
+    Ek::FT = -90mV
+    En::FT = 50mV
+    gn::FT = 100msiemens * cm^(-2) * 20000um^2
+    gk::FT = 30msiemens * cm^(-2) * 20000um^2
+    Vt::FT = -63mV
+    τe::FT = 5ms
+    τi::FT = 10ms
+    Ee::FT = 0mV
+    Ei::FT = -80mV
 end
 
-@snn_kw mutable struct HH
+@snn_kw mutable struct HH{FT=Vector{Float32},BT=Vector{Bool}}
     param::HHParameter = HHParameter()
     N::Int32 = 100
-    v::Vector{Float32} = param.El .+ 5(randn(N) .- 1)
-    m::Vector{Float32} = zeros(N)
-    n::Vector{Float32} = zeros(N)
-    h::Vector{Float32} = ones(N)
-    ge::Vector{Float32}  = (1.5randn(N) .+ 4) .* 10nS
-    gi::Vector{Float32}  = (12randn(N) .+ 20) .* 10nS
-    fire::Vector{Bool} = zeros(Bool, N)
-    I::Vector{Float32} = zeros(N)
+    v::FT = param.El .+ 5(randn(N) .- 1)
+    m::FT = zeros(N)
+    n::FT = zeros(N)
+    h::FT = ones(N)
+    ge::FT  = (1.5randn(N) .+ 4) .* 10nS
+    gi::FT  = (12randn(N) .+ 20) .* 10nS
+    fire::BT = zeros(Bool, N)
+    I::FT = zeros(N)
     records::Dict = Dict()
 end
 

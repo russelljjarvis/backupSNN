@@ -1,26 +1,26 @@
-@snn_kw struct SpikingSynapseParameter
-    τpre::Float32 = 20ms
-    τpost::Float32 = 20ms
-    Wmax::Float32 = 0.01
-    ΔApre::Float32 = 0.01 * Wmax
-    ΔApost::Float32 = -ΔApre * τpre / τpost * 1.05
+@snn_kw struct SpikingSynapseParameter{FT=Float32}
+    τpre::FT = 20ms
+    τpost::FT = 20ms
+    Wmax::FT = 0.01
+    ΔApre::FT = 0.01 * Wmax
+    ΔApost::FT = -ΔApre * τpre / τpost * 1.05
 end
 
-@snn_kw mutable struct SpikingSynapse
+@snn_kw mutable struct SpikingSynapse{VIT=Vector{Int32},VFT=Vector{Float32},VBT=Vector{Bool}}
     param::SpikingSynapseParameter = SpikingSynapseParameter()
-    rowptr::Vector{Int32} # row pointer of sparse W
-    colptr::Vector{Int32} # column pointer of sparse W
-    I::Vector{Int32}      # postsynaptic index of W
-    J::Vector{Int32}      # presynaptic index of W
-    index::Vector{Int32}  # index mapping: W[index[i]] = Wt[i], Wt = sparse(dense(W)')
-    W::Vector{Float32}  # synaptic weight
-    tpre::Vector{Float32} = zero(W) # presynaptic spiking time
-    tpost::Vector{Float32} = zero(W) # postsynaptic spiking time
-    Apre::Vector{Float32} = zero(W) # presynaptic trace
-    Apost::Vector{Float32} = zero(W) # postsynaptic trace
-    fireI::Vector{Bool} # postsynaptic firing
-    fireJ::Vector{Bool} # presynaptic firing
-    g::Vector{Float32} # postsynaptic conductance
+    rowptr::VIT # row pointer of sparse W
+    colptr::VIT # column pointer of sparse W
+    I::VIT      # postsynaptic index of W
+    J::VIT      # presynaptic index of W
+    index::VIT  # index mapping: W[index[i]] = Wt[i], Wt = sparse(dense(W)')
+    W::VFT  # synaptic weight
+    tpre::VFT = zero(W) # presynaptic spiking time
+    tpost::VFT = zero(W) # postsynaptic spiking time
+    Apre::VFT = zero(W) # presynaptic trace
+    Apost::VFT = zero(W) # postsynaptic trace
+    fireI::VBT # postsynaptic firing
+    fireJ::VBT # presynaptic firing
+    g::VFT # postsynaptic conductance
     records::Dict = Dict()
 end
 

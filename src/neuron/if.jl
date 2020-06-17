@@ -1,22 +1,22 @@
 abstract type AbstractIFParameter end
-@snn_kw struct IFParameter <: AbstractIFParameter
-    τm::Float32 = 20ms
-    τe::Float32 = 5ms
-    τi::Float32 = 10ms
-    Vt::Float32 = -50mV
-    Vr::Float32 = -60mV
-    El::Float32 = Vr
+@snn_kw struct IFParameter{FT=Float32} <: AbstractIFParameter
+    τm::FT = 20ms
+    τe::FT = 5ms
+    τi::FT = 10ms
+    Vt::FT = -50mV
+    Vr::FT = -60mV
+    El::FT = Vr
 end
 
 abstract type AbstractIF end
-@snn_kw mutable struct IF <: AbstractIF
+@snn_kw mutable struct IF{FT=Vector{Float32},BT=Vector{Bool}} <: AbstractIF
     param::IFParameter = IFParameter()
     N::Int32 = 100
-    v::Vector{Float32} = param.Vr .+ rand(N) .* (param.Vt - param.Vr)
-    ge::Vector{Float32} = zeros(N)
-    gi::Vector{Float32} = zeros(N)
-    fire::Vector{Bool} = zeros(Bool, N)
-    I::Vector{Float32} = zeros(N)
+    v::FT = param.Vr .+ rand(N) .* (param.Vt - param.Vr)
+    ge::FT = zeros(N)
+    gi::FT = zeros(N)
+    fire::BT = zeros(Bool, N)
+    I::FT = zeros(N)
     records::Dict = Dict()
 end
 

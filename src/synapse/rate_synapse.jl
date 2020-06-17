@@ -1,15 +1,15 @@
-@snn_kw struct RateSynapseParameter
-    lr::Float32 = 1e-3
+@snn_kw struct RateSynapseParameter{FT=Float32}
+    lr::FT = 1e-3
 end
 
-@snn_kw mutable struct RateSynapse
+@snn_kw mutable struct RateSynapse{VIT=Vector{Int32},VFT=Vector{Float32}}
     param::RateSynapseParameter = RateSynapseParameter()
-    colptr::Vector{Int32} # column pointer of sparse W
-    I::Vector{Int32}      # postsynaptic index of W
-    W::Vector{Float32}  # synaptic weight
-    rI::Vector{Float32} # postsynaptic rate
-    rJ::Vector{Float32} # presynaptic rate
-    g::Vector{Float32}  # postsynaptic conductance
+    colptr::VIT # column pointer of sparse W
+    I::VIT      # postsynaptic index of W
+    W::VFT  # synaptic weight
+    rI::VFT # postsynaptic rate
+    rJ::VFT # presynaptic rate
+    g::VFT  # postsynaptic conductance
     records::Dict = Dict()
 end
 

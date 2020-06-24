@@ -13,12 +13,12 @@ end
     records::Dict = Dict()
 end
 
-function PINningSynapse(pre, post; σ = 1.5, p = 0.0, α = 1)
+function PINningSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
     rI, rJ, g = post.r, pre.r, post.g
     W = σ * 1 / √pre.N * randn(post.N, pre.N) # normalized recurrent weight
-    P = α * eye(post.N) # initial inverse of C = <rr'>
+    P = α * I(post.N) # initial inverse of C = <rr'>
     f, q = zeros(post.N), zeros(post.N)
-    PINningSynapse(;@symdict(W, rI, rJ, g, P, q, f)...)
+    PINningSynapse(;@symdict(W, rI, rJ, g, P, q, f)..., kwargs...)
 end
 
 function forward!(c::PINningSynapse, param::PINningSynapseParameter)

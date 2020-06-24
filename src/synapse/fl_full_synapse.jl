@@ -16,14 +16,14 @@ end
     records::Dict = Dict()
 end
 
-function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1)
+function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
     rI, rJ, g = post.r, pre.r, post.g
     W = σ * 1 / √pre.N * randn(post.N, pre.N) # normalized recurrent weight
-    w = 1 / √post.N * (2rand(post.N) - 1) # initial output weight
-    u = 2rand(post.N) - 1 # initial force weight
-    P = α * eye(post.N) # initial inverse of C = <rr'>
+    w = 1 / √post.N * (2rand(post.N) .- 1) # initial output weight
+    u = 2rand(post.N) .- 1 # initial force weight
+    P = α * I(post.N) # initial inverse of C = <rr'>
     q = zeros(post.N)
-    FLSynapse(;@symdict(W, rI, rJ, g, P, q, u, w)...)
+    FLSynapse(;@symdict(W, rI, rJ, g, P, q, u, w)..., kwargs...)
 end
 
 function forward!(c::FLSynapse, param::FLSynapseParameter)

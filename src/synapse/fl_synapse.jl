@@ -18,7 +18,7 @@ end
     records::Dict = Dict()
 end
 
-function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1)
+function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
     w = σ * 1 / √(p * pre.N) * sprandn(post.N, pre.N, p)
     rowptr, colptr, I, J, index, W = dsparse(w)
     rI, rJ, g = post.r, pre.r, post.g
@@ -26,7 +26,7 @@ function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1)
     q = zeros(post.N)
     u = 2rand(post.N) - 1
     w = 1 / √post.N * (2rand(post.N) - 1)
-    FLSynapse(;@symdict(colptr, I, W, rI, rJ, g, P, q, u, w)...)
+    FLSynapse(;@symdict(colptr, I, W, rI, rJ, g, P, q, u, w)..., kwargs...)
 end
 
 function forward!(c::FLSynapse, param::FLSynapseParameter)

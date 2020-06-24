@@ -3,6 +3,7 @@ module SpikingNeuralNetworks
 export SNN
 const SNN = SpikingNeuralNetworks
 
+using LinearAlgebra
 using SparseArrays
 using Reexport
 using Requires

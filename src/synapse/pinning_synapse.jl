@@ -15,13 +15,13 @@ end
     records::Dict = Dict()
 end
 
-function PINningSynapse(pre, post; σ = 1.5, p = 0.0, α = 1)
+function PINningSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
     w = σ / √(p * pre.N) * sprandn(post.N, pre.N, p)
     rowptr, colptr, I, J, index, W = dsparse(w)
     rI, rJ, g = post.r, pre.r, post.g
     P = α .* (I .== J)
     f, q = zeros(post.N), zeros(post.N)
-    PINningSynapse(;@symdict(colptr, I, W, rI, rJ, g, P, q, f)...)
+    PINningSynapse(;@symdict(colptr, I, W, rI, rJ, g, P, q, f)..., kwargs...)
 end
 
 function forward!(c::PINningSynapse, param::PINningSynapseParameter)

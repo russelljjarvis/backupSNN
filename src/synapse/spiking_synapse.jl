@@ -24,12 +24,12 @@ end
     records::Dict = Dict()
 end
 
-function SpikingSynapse(pre, post, sym; σ = 0.0, p = 0.0)
+function SpikingSynapse(pre, post, sym; σ = 0.0, p = 0.0, kwargs...)
     w = σ * sprand(post.N, pre.N, p)
     rowptr, colptr, I, J, index, W = dsparse(w)
     fireI, fireJ = post.fire, pre.fire
     g = getfield(post, sym)
-    SpikingSynapse(;@symdict(rowptr, colptr, I, J, index, W, fireI, fireJ, g)...)
+    SpikingSynapse(;@symdict(rowptr, colptr, I, J, index, W, fireI, fireJ, g)..., kwargs...)
 end
 
 function forward!(c::SpikingSynapse, param::SpikingSynapseParameter)

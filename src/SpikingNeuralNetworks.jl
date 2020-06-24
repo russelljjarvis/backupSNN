@@ -1,18 +1,16 @@
 module SpikingNeuralNetworks
 
+export SNN
 const SNN = SpikingNeuralNetworks
 
+using LinearAlgebra
 using SparseArrays
 using Reexport
-using Parameters
 using Requires
+using UnPack
 #using Unitful
 #using Unitful.DefaultSymbols
 #@reexport using Utils
-
-const SNNInt = Int32
-const SNNFloat = Float32
-# srand(1000)
 
 include("units.jl")
 include("main.jl")

@@ -1,29 +1,29 @@
 struct FLSynapseParameter
 end
 
-@with_kw mutable struct FLSynapse
+@snn_kw mutable struct FLSynapse{MFT=Matrix{Float32},VFT=Vector{Float32},FT=Float32}
     param::FLSynapseParameter = FLSynapseParameter()
-    W::Matrix{SNNFloat}  # synaptic weight
-    rI::Vector{SNNFloat} # postsynaptic rate
-    rJ::Vector{SNNFloat} # presynaptic rate
-    g::Vector{SNNFloat}  # postsynaptic conductance
-    P::Matrix{SNNFloat}  # <rᵢrⱼ>⁻¹
-    q::Vector{SNNFloat}  # P * r
-    u::Vector{SNNFloat} # force weight
-    w::Vector{SNNFloat} # output weight
-    f::SNNFloat = 0 # postsynaptic traget
-    z::SNNFloat = 0.5randn()  # output z ≈ f
+    W::MFT  # synaptic weight
+    rI::VFT # postsynaptic rate
+    rJ::VFT # presynaptic rate
+    g::VFT  # postsynaptic conductance
+    P::MFT  # <rᵢrⱼ>⁻¹
+    q::VFT  # P * r
+    u::VFT # force weight
+    w::VFT # output weight
+    f::FT = 0 # postsynaptic traget
+    z::FT = 0.5randn()  # output z ≈ f
     records::Dict = Dict()
 end
 
-function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1)
+function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
     rI, rJ, g = post.r, pre.r, post.g
     W = σ * 1 / √pre.N * randn(post.N, pre.N) # normalized recurrent weight
-    w = 1 / √post.N * (2rand(post.N) - 1) # initial output weight
-    u = 2rand(post.N) - 1 # initial force weight
-    P = α * eye(post.N) # initial inverse of C = <rr'>
+    w = 1 / √post.N * (2rand(post.N) .- 1) # initial output weight
+    u = 2rand(post.N) .- 1 # initial force weight
+    P = α * I(post.N) # initial inverse of C = <rr'>
     q = zeros(post.N)
-    FLSynapse(;@symdict(W, rI, rJ, g, P, q, u, w)...)
+    FLSynapse(;@symdict(W, rI, rJ, g, P, q, u, w)..., kwargs...)
 end
 
 function forward!(c::FLSynapse, param::FLSynapseParameter)
@@ -33,7 +33,7 @@ function forward!(c::FLSynapse, param::FLSynapseParameter)
     BLAS.axpy!(z, u, g)
 end
 
-function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::SNNFloat, t::SNNFloat)
+function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::Float32, t::Float32)
     C = 1 / (1 + dot(q, rI))
     BLAS.axpy!(C * (f - z), q, w)
     BLAS.ger!(-C, q, q, P)

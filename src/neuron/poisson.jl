@@ -2,11 +2,11 @@
     rate::FT = 1Hz
 end
 
-@snn_kw mutable struct Poisson{FT=Vector{Float32},BT=Vector{Bool}}
+@snn_kw mutable struct Poisson{VFT=Vector{Float32},VBT=Vector{Bool}}
     param::PoissonParameter = PoissonParameter()
     N::Int32 = 100
-    randcache::FT = rand(N)
-    fire::BT = zeros(Bool, N)
+    randcache::VFT = rand(N)
+    fire::VBT = zeros(Bool, N)
     records::Dict = Dict()
 end
 

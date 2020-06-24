@@ -207,7 +207,7 @@ macro snn_kw(str)
     ctor_params = snn_kw_str_sentinels.(str_params)
     ctor_params_bodies = snn_kw_str_sentinel_check.(str_params)
 
-    # Accept field values and type params as kwargs
+    # Constructor accepts field values and type params as kwargs
     ctor_kws = Expr(:parameters,
                     map(snn_kw_str_kws, str_fields)...,
                     map(snn_kw_str_kws_types, ctor_params)...)
@@ -222,8 +222,6 @@ macro snn_kw(str)
                      Expr(:call, ctor_call, first.(str_fields)...))
     ctor = Expr(:function, ctor_sig, ctor_body)
 
-    @show str_name
-    @show str
     return quote
         $(esc(str))
         $(esc(ctor))

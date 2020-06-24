@@ -1,13 +1,13 @@
 struct RateParameter
 end
 
-@snn_kw mutable struct Rate{FT=Vector{Float32}}
+@snn_kw mutable struct Rate{VFT=Vector{Float32}}
     param::RateParameter = RateParameter()
     N::Int32 = 100
-    x::FT = 0.5randn(N)
-    r::FT = tanh.(x)
-    g::FT = zeros(N)
-    I::FT = zeros(N)
+    x::VFT = 0.5randn(N)
+    r::VFT = tanh.(x)
+    g::VFT = zeros(N)
+    I::VFT = zeros(N)
     records::Dict = Dict()
 end
 

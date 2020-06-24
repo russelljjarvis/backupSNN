@@ -1,5 +1,6 @@
 module SpikingNeuralNetworks
 
+export SNN
 const SNN = SpikingNeuralNetworks
 
 using SparseArrays

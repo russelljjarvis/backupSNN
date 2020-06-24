@@ -9,14 +9,14 @@ abstract type AbstractIFParameter end
 end
 
 abstract type AbstractIF end
-@snn_kw mutable struct IF{FT=Vector{Float32},BT=Vector{Bool}} <: AbstractIF
+@snn_kw mutable struct IF{VFT=Vector{Float32},VBT=Vector{Bool}} <: AbstractIF
     param::IFParameter = IFParameter()
     N::Int32 = 100
-    v::FT = param.Vr .+ rand(N) .* (param.Vt - param.Vr)
-    ge::FT = zeros(N)
-    gi::FT = zeros(N)
-    fire::BT = zeros(Bool, N)
-    I::FT = zeros(N)
+    v::VFT = param.Vr .+ rand(N) .* (param.Vt - param.Vr)
+    ge::VFT = zeros(N)
+    gi::VFT = zeros(N)
+    fire::VBT = zeros(Bool, N)
+    I::VFT = zeros(N)
     records::Dict = Dict()
 end
 

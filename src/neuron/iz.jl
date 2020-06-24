@@ -5,13 +5,13 @@
     d::FT = 2
 end
 
-@snn_kw mutable struct IZ{FT=Vector{Float32},BT=Vector{Bool}}
+@snn_kw mutable struct IZ{VFT=Vector{Float32},VBT=Vector{Bool}}
     param::IZParameter = IZParameter()
     N::Int32 = 100
-    v::FT = fill(-65.0, N)
-    u::FT = param.b * v
-    fire::BT = zeros(Bool, N)
-    I::FT = zeros(N)
+    v::VFT = fill(-65.0, N)
+    u::VFT = param.b * v
+    fire::VBT = zeros(Bool, N)
+    I::VFT = zeros(N)
     records::Dict = Dict()
 end
 

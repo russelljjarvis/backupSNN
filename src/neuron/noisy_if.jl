@@ -2,9 +2,10 @@
     σ::FT = 0
 end
 
-@snn_kw mutable struct NoisyIF{FT=Vector{Float32}} <: AbstractIF
+@snn_kw mutable struct NoisyIF{VFT=Vector{Float32}} <: AbstractIF
     param::NoisyIFParameter = NoisyIFParameter()
-    randncache::FT = randn(N)
+    N::Int32 = 100
+    randncache::VFT = randn(N)
 end
 
 function integrate!(p::NoisyIF, param::NoisyIFParameter, dt::Float32)

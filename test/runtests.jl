@@ -1,10 +1,11 @@
 #using Plots; plotly()
 using SpikingNeuralNetworks
-const SNN = SpikingNeuralNetworks
 #using Unitful
 #using Unitful.DefaultSymbols
 include(joinpath(@__DIR__, "..", "src", "units.jl")) # FIXME
+using Test
 
+include("ctors.jl")
 include("chain.jl")
 include("hh_net.jl")
 include("hh_neuron.jl")

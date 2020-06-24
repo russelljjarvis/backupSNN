@@ -13,17 +13,17 @@
     Ei::FT = -80mV
 end
 
-@snn_kw mutable struct HH{FT=Vector{Float32},BT=Vector{Bool}}
+@snn_kw mutable struct HH{VFT=Vector{Float32},VBT=Vector{Bool}}
     param::HHParameter = HHParameter()
     N::Int32 = 100
-    v::FT = param.El .+ 5(randn(N) .- 1)
-    m::FT = zeros(N)
-    n::FT = zeros(N)
-    h::FT = ones(N)
-    ge::FT  = (1.5randn(N) .+ 4) .* 10nS
-    gi::FT  = (12randn(N) .+ 20) .* 10nS
-    fire::BT = zeros(Bool, N)
-    I::FT = zeros(N)
+    v::VFT = param.El .+ 5(randn(N) .- 1)
+    m::VFT = zeros(N)
+    n::VFT = zeros(N)
+    h::VFT = ones(N)
+    ge::VFT  = (1.5randn(N) .+ 4) .* 10nS
+    gi::VFT  = (12randn(N) .+ 20) .* 10nS
+    fire::VBT = zeros(Bool, N)
+    I::VFT = zeros(N)
     records::Dict = Dict()
 end
 

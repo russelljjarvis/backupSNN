@@ -3,6 +3,9 @@
 coretype(T::UnionAll) = coretype(T.body)
 coretype(T::DataType) = T
 paramnames(T) = coretype(T).parameters
+if VERSION < v"1.1.0-DEV.441"
+    fieldtypes(T) = ntuple(i -> fieldtype(T, i), fieldcount(T))
+end
 function test_typeparams(Model; args=())
     Model = coretype(Model)
     n = Model(args...)

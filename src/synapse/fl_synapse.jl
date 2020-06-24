@@ -1,24 +1,24 @@
 struct FLSynapseParameter
 end
 
-@with_kw mutable struct FLSynapse
+@snn_kw mutable struct FLSynapse{VFT=Vector{Float32},FT=Float32}
     param::FLSynapseParameter = FLSynapseParameter()
-    colptr::Vector{SNNInt} # column pointer of sparse W
-    I::Vector{SNNInt}      # postsynaptic index of W
-    W::Vector{SNNFloat}  # synaptic weight
-    rI::Vector{SNNFloat} # postsynaptic rate
-    rJ::Vector{SNNFloat} # presynaptic rate
-    g::Vector{SNNFloat}  # postsynaptic conductance
-    P::Vector{SNNFloat}  # <rᵢrⱼ>⁻¹
-    q::Vector{SNNFloat}  # P * r
-    u::Vector{SNNFloat} # force weight
-    w::Vector{SNNFloat} # output weight
-    f::SNNFloat = 0 # postsynaptic traget
-    z::SNNFloat = 0.5randn()  # output z ≈ f
+    colptr::Vector{Int32} # column pointer of sparse W
+    I::Vector{Int32}      # postsynaptic index of W
+    W::VFT  # synaptic weight
+    rI::VFT # postsynaptic rate
+    rJ::VFT # presynaptic rate
+    g::VFT  # postsynaptic conductance
+    P::VFT  # <rᵢrⱼ>⁻¹
+    q::VFT  # P * r
+    u::VFT # force weight
+    w::VFT # output weight
+    f::FT = 0 # postsynaptic traget
+    z::FT = 0.5randn()  # output z ≈ f
     records::Dict = Dict()
 end
 
-function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1)
+function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
     w = σ * 1 / √(p * pre.N) * sprandn(post.N, pre.N, p)
     rowptr, colptr, I, J, index, W = dsparse(w)
     rI, rJ, g = post.r, pre.r, post.g
@@ -26,13 +26,13 @@ function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1)
     q = zeros(post.N)
     u = 2rand(post.N) - 1
     w = 1 / √post.N * (2rand(post.N) - 1)
-    FLSynapse(;@symdict(colptr, I, W, rI, rJ, g, P, q, u, w)...)
+    FLSynapse(;@symdict(colptr, I, W, rI, rJ, g, P, q, u, w)..., kwargs...)
 end
 
 function forward!(c::FLSynapse, param::FLSynapseParameter)
     z = dot(w, rI)
     g .= z .* u
-    fill!(q, zero(SNNFloat))
+    fill!(q, zero(Float32))
     @inbounds for j in 1:(length(colptr) - 1)
         rJj = rJ[j]
         for s = colptr[j]:(colptr[j+1] - 1)
@@ -43,7 +43,7 @@ function forward!(c::FLSynapse, param::FLSynapseParameter)
     end
 end
 
-function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::SNNFloat, t::SNNFloat)
+function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::Float32, t::Float32)
     C = 1 / (1 + dot(q, rI))
     BLAS.axpy!(C * (f - z), q, w)
     @inbounds for j in 1:(length(colptr) - 1)

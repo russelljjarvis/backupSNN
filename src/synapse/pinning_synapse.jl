@@ -1,32 +1,32 @@
 struct PINningSynapseParameter
 end
 
-@with_kw mutable struct PINningSynapse
+@snn_kw mutable struct PINningSynapse{VIT=Vector{Int32},VFT=Vector{Float32}}
     param::PINningSynapseParameter = PINningSynapseParameter()
-    colptr::Vector{SNNInt} # column pointer of sparse W
-    I::Vector{SNNInt}      # postsynaptic index of W
-    W::Vector{SNNFloat}  # synaptic weight
-    rI::Vector{SNNFloat} # postsynaptic rate
-    rJ::Vector{SNNFloat} # presynaptic rate
-    g::Vector{SNNFloat}  # postsynaptic conductance
-    P::Vector{SNNFloat}  # <rᵢrⱼ>⁻¹
-    q::Vector{SNNFloat}  # P * r
-    f::Vector{SNNFloat}  # postsynaptic traget
+    colptr::VIT # column pointer of sparse W
+    I::VIT      # postsynaptic index of W
+    W::VFT  # synaptic weight
+    rI::VFT # postsynaptic rate
+    rJ::VFT # presynaptic rate
+    g::VFT  # postsynaptic conductance
+    P::VFT  # <rᵢrⱼ>⁻¹
+    q::VFT  # P * r
+    f::VFT  # postsynaptic traget
     records::Dict = Dict()
 end
 
-function PINningSynapse(pre, post; σ = 1.5, p = 0.0, α = 1)
+function PINningSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
     w = σ / √(p * pre.N) * sprandn(post.N, pre.N, p)
     rowptr, colptr, I, J, index, W = dsparse(w)
     rI, rJ, g = post.r, pre.r, post.g
     P = α .* (I .== J)
     f, q = zeros(post.N), zeros(post.N)
-    PINningSynapse(;@symdict(colptr, I, W, rI, rJ, g, P, q, f)...)
+    PINningSynapse(;@symdict(colptr, I, W, rI, rJ, g, P, q, f)..., kwargs...)
 end
 
 function forward!(c::PINningSynapse, param::PINningSynapseParameter)
-    fill!(q, zero(SNNFloat))
-    fill!(g, zero(SNNFloat))
+    fill!(q, zero(Float32))
+    fill!(g, zero(Float32))
     @inbounds for j in 1:(length(colptr) - 1)
         rJj = rJ[j]
         for s = colptr[j]:(colptr[j+1] - 1)
@@ -37,7 +37,7 @@ function forward!(c::PINningSynapse, param::PINningSynapseParameter)
     end
 end
 
-function plasticity!(c::PINningSynapse, param::PINningSynapseParameter, dt::SNNFloat, t::SNNFloat)
+function plasticity!(c::PINningSynapse, param::PINningSynapseParameter, dt::Float32, t::Float32)
     C = 1 / (1 + dot(q, rI))
     @inbounds for j in 1:(length(colptr) - 1)
         for s in colptr[j]:(colptr[j+1] - 1)

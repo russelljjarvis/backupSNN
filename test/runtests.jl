@@ -5,7 +5,7 @@ using SpikingNeuralNetworks
 include(joinpath(@__DIR__, "..", "src", "units.jl")) # FIXME
 using Test
 
-if VERSION < v"1.1"
+if VERSION > v"1.1"
 include("ctors.jl")
 end
 include("chain.jl")

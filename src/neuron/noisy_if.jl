@@ -2,6 +2,9 @@
     σ::FT = 0
 end
 
+"""
+Noisy Integrate-And-Fire Neuron
+"""
 @snn_kw mutable struct NoisyIF{VFT=Vector{Float32}} <: AbstractIF
     param::NoisyIFParameter = NoisyIFParameter()
     N::Int32 = 100

@@ -2,6 +2,9 @@
     lr::FT = 1e-3
 end
 
+"""
+[Rate Synapse](https://brian2.readthedocs.io/en/2.0b4/resources/tutorials/2-intro-to-brian-synapses.html)
+"""
 @snn_kw mutable struct RateSynapse{VIT=Vector{Int32},VFT=Vector{Float32}}
     param::RateSynapseParameter = RateSynapseParameter()
     colptr::VIT # column pointer of sparse W

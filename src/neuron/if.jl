@@ -9,6 +9,10 @@ abstract type AbstractIFParameter end
 end
 
 abstract type AbstractIF end
+
+"""
+[Integrate-And-Fire Neuron](https://neuronaldynamics.epfl.ch/online/Ch1.S3.html)
+"""
 @snn_kw mutable struct IF{VFT=Vector{Float32},VBT=Vector{Bool}} <: AbstractIF
     param::IFParameter = IFParameter()
     N::Int32 = 100

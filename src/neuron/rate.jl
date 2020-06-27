@@ -1,6 +1,9 @@
 struct RateParameter
 end
 
+"""
+[Rate Neuron](https://neuronaldynamics.epfl.ch/online/Ch15.S3.html)
+"""
 @snn_kw mutable struct Rate{VFT=Vector{Float32}}
     param::RateParameter = RateParameter()
     N::Int32 = 100

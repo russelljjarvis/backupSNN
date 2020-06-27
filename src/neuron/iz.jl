@@ -5,6 +5,9 @@
     d::FT = 2
 end
 
+"""
+[Izhikevich Neuron](https://www.izhikevich.org/publications/spikes.htm)
+"""
 @snn_kw mutable struct IZ{VFT=Vector{Float32},VBT=Vector{Bool}}
     param::IZParameter = IZParameter()
     N::Int32 = 100

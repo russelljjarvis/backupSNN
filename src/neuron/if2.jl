@@ -3,6 +3,9 @@
     Ei::FT = 0mV
 end
 
+"""
+[Integrate-And-Fire Neuron](https://neuronaldynamics.epfl.ch/online/Ch1.S3.html)
+"""
 @snn_kw mutable struct IF2 <: AbstractIF
     param::IF2Parameter = IF2Parameter()
     N::Int32 = 100

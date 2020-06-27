@@ -2,6 +2,9 @@
     rate::FT = 1Hz
 end
 
+"""
+[Poisson Neuron](https://www.cns.nyu.edu/~david/handouts/poisson.pdf)
+"""
 @snn_kw mutable struct Poisson{VFT=Vector{Float32},VBT=Vector{Bool}}
     param::PoissonParameter = PoissonParameter()
     N::Int32 = 100

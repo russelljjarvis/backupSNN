@@ -1,6 +1,9 @@
 struct PINningSynapseParameter
 end
 
+"""
+[PINing Sparse Synapse](https://www.ncbi.nlm.nih.gov/pubmed/26971945)
+"""
 @snn_kw mutable struct PINningSynapse{MFT=Matrix{Float32},VFT=Vector{Float32}}
     param::PINningSynapseParameter = PINningSynapseParameter()
     W::MFT  # synaptic weight

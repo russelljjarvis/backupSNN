@@ -1,6 +1,9 @@
 struct FLSynapseParameter
 end
 
+"""
+[Force Learning Sparse Synapse](http://www.theswartzfoundation.org/docs/Sussillo-Abbott-Coherent-Patterns-August-2009.pdf)
+"""
 @snn_kw mutable struct FLSynapse{VFT=Vector{Float32},FT=Float32}
     param::FLSynapseParameter = FLSynapseParameter()
     colptr::Vector{Int32} # column pointer of sparse W

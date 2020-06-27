@@ -6,6 +6,9 @@
     ΔApost::FT = -ΔApre * τpre / τpost * 1.05
 end
 
+"""
+[Spking Synapse](https://brian2.readthedocs.io/en/2.0b4/resources/tutorials/2-intro-to-brian-synapses.html)
+"""
 @snn_kw mutable struct SpikingSynapse{VIT=Vector{Int32},VFT=Vector{Float32},VBT=Vector{Bool}}
     param::SpikingSynapseParameter = SpikingSynapseParameter()
     rowptr::VIT # row pointer of sparse W

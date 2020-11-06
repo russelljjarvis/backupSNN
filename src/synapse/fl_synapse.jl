@@ -1,15 +1,13 @@
 struct FLSynapseParameter
 end
 
-@snn_kw mutable struct FLSynapse{VFT=Vector{Float32},FT=Float32}
+@snn_kw mutable struct FLSynapse{MFT=Matrix{Float32},VFT=Vector{Float32},FT=Float32}
     param::FLSynapseParameter = FLSynapseParameter()
-    colptr::Vector{Int32} # column pointer of sparse W
-    I::Vector{Int32}      # postsynaptic index of W
-    W::VFT  # synaptic weight
+    W::MFT  # synaptic weight
     rI::VFT # postsynaptic rate
     rJ::VFT # presynaptic rate
     g::VFT  # postsynaptic conductance
-    P::VFT  # <rᵢrⱼ>⁻¹
+    P::MFT  # <rᵢrⱼ>⁻¹
     q::VFT  # P * r
     u::VFT # force weight
     w::VFT # output weight
@@ -19,41 +17,29 @@ end
 end
 
 """
-[Force Learning Sparse Synapse](http://www.theswartzfoundation.org/docs/Sussillo-Abbott-Coherent-Patterns-August-2009.pdf)
+[Force Learning Full Synapse](http://www.theswartzfoundation.org/docs/Sussillo-Abbott-Coherent-Patterns-August-2009.pdf)
 """
 FLSynapse
 
 function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
-    w = σ * 1 / √(p * pre.N) * sprandn(post.N, pre.N, p)
-    rowptr, colptr, I, J, index, W = dsparse(w)
     rI, rJ, g = post.r, pre.r, post.g
-    P = α .* (I .== J)
+    W = σ * 1 / √pre.N * randn(post.N, pre.N) # normalized recurrent weight
+    w = 1 / √post.N * (2rand(post.N) .- 1) # initial output weight
+    u = 2rand(post.N) .- 1 # initial force weight
+    P = α * I(post.N) # initial inverse of C = <rr'>
     q = zeros(post.N)
-    u = 2rand(post.N) - 1
-    w = 1 / √post.N * (2rand(post.N) - 1)
-    FLSynapse(;@symdict(colptr, I, W, rI, rJ, g, P, q, u, w)..., kwargs...)
+    FLSynapse(;@symdict(W, rI, rJ, g, P, q, u, w)..., kwargs...)
 end
 
 function forward!(c::FLSynapse, param::FLSynapseParameter)
     z = dot(w, rI)
-    g .= z .* u
-    fill!(q, zero(Float32))
-    @inbounds for j in 1:(length(colptr) - 1)
-        rJj = rJ[j]
-        for s = colptr[j]:(colptr[j+1] - 1)
-            i = I[s]
-            q[i] += P[s] * rJj
-            g[i] += W[s] * rJj
-        end
-    end
+    BLAS.A_mul_B!(q, P, rJ)
+    BLAS.A_mul_B!(g, W, rJ)
+    BLAS.axpy!(z, u, g)
 end
 
 function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::Float32, t::Float32)
     C = 1 / (1 + dot(q, rI))
     BLAS.axpy!(C * (f - z), q, w)
-    @inbounds for j in 1:(length(colptr) - 1)
-        for s in colptr[j]:(colptr[j+1] - 1)
-            P[s] += -C * q[I[s]] * q[j]
-        end
-    end
+    BLAS.ger!(-C, q, q, P)
 end

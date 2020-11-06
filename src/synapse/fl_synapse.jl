@@ -32,6 +32,7 @@ function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
 end
 
 function forward!(c::FLSynapse, param::FLSynapseParameter)
+    @unpack W, rI, rJ, g, P, q, u, w, z = c
     z = dot(w, rI)
     mul!(q, P, rJ)
     mul!(g, W, rJ)
@@ -39,6 +40,7 @@ function forward!(c::FLSynapse, param::FLSynapseParameter)
 end
 
 function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::Float32, t::Float32)
+    @unpack rI, P, q, w, f, z = c
     C = 1 / (1 + dot(q, rI))
     axpy!(C * (f - z), q, w)
     BLAS.ger!(-C, q, q, P)

@@ -35,6 +35,7 @@ function FLSparseSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
 end
 
 function forward!(c::FLSparseSynapse, param::FLSparseSynapseParameter)
+    @unpack W, rI, rJ, g, P, q, u, w, f, z = c
     z = dot(w, rI)
     g .= z .* u
     fill!(q, zero(Float32))

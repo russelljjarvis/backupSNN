@@ -10,7 +10,6 @@ using Requires
 using UnPack
 #using Unitful
 #using Unitful.DefaultSymbols
-#@reexport using Utils
 
 include("units.jl")
 include("main.jl")
@@ -26,10 +25,10 @@ include("neuron/rate.jl")
 
 include("synapse/spiking_synapse.jl")
 include("synapse/rate_synapse.jl")
-include("synapse/pinning_full_synapse.jl")
-# include("synapse/pinning_synapse.jl")
-include("synapse/fl_full_synapse.jl")
-# include("synapse/fl_synapse.jl")
+include("synapse/fl_synapse.jl")
+include("synapse/fl_sparse_synapse.jl")
+include("synapse/pinning_synapse.jl")
+include("synapse/pinning_sparse_synapse.jl")
 
 function __init__()
     @require Plots="91a5bcdd-55d7-5caf-9e0b-520d859cae80" include("plot.jl")

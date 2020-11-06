@@ -1,9 +1,6 @@
 struct PINningSynapseParameter
 end
 
-"""
-[PINing Sparse Synapse](https://www.ncbi.nlm.nih.gov/pubmed/26971945)
-"""
 @snn_kw mutable struct PINningSynapse{VIT=Vector{Int32},VFT=Vector{Float32}}
     param::PINningSynapseParameter = PINningSynapseParameter()
     colptr::VIT # column pointer of sparse W
@@ -17,6 +14,11 @@ end
     f::VFT  # postsynaptic traget
     records::Dict = Dict()
 end
+
+"""
+[PINing Sparse Synapse](https://www.ncbi.nlm.nih.gov/pubmed/26971945)
+"""
+PINningSynapse
 
 function PINningSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
     w = σ / √(p * pre.N) * sprandn(post.N, pre.N, p)

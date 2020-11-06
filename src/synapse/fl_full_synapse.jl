@@ -1,9 +1,6 @@
 struct FLSynapseParameter
 end
 
-"""
-[Force Learning Full Synapse](http://www.theswartzfoundation.org/docs/Sussillo-Abbott-Coherent-Patterns-August-2009.pdf)
-"""
 @snn_kw mutable struct FLSynapse{MFT=Matrix{Float32},VFT=Vector{Float32},FT=Float32}
     param::FLSynapseParameter = FLSynapseParameter()
     W::MFT  # synaptic weight
@@ -18,6 +15,11 @@ end
     z::FT = 0.5randn()  # output z ≈ f
     records::Dict = Dict()
 end
+
+"""
+[Force Learning Full Synapse](http://www.theswartzfoundation.org/docs/Sussillo-Abbott-Coherent-Patterns-August-2009.pdf)
+"""
+FLSynapse
 
 function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
     rI, rJ, g = post.r, pre.r, post.g

@@ -16,6 +16,8 @@ end
 Poisson
 
 function integrate!(p::Poisson, param::PoissonParameter, dt::Float32)
+    @unpack N, randcache, fire = p
+    @unpack rate = param
     prob = rate * dt
     rand!(randcache)
     @inbounds for i = 1:N

@@ -30,6 +30,7 @@ function PINningSparseSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
 end
 
 function forward!(c::PINningSparseSynapse, param::PINningSparseSynapseParameter)
+    @unpack colptr, I, W, rJ, g, P, q = c 
     fill!(q, zero(Float32))
     fill!(g, zero(Float32))
     @inbounds for j in 1:(length(colptr) - 1)
@@ -43,6 +44,7 @@ function forward!(c::PINningSparseSynapse, param::PINningSparseSynapseParameter)
 end
 
 function plasticity!(c::PINningSparseSynapse, param::PINningSparseSynapseParameter, dt::Float32, t::Float32)
+    @unpack colptr, I, W, rI, g, P, q, f = c 
     C = 1 / (1 + dot(q, rI))
     @inbounds for j in 1:(length(colptr) - 1)
         for s in colptr[j]:(colptr[j+1] - 1)

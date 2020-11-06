@@ -27,11 +27,13 @@ function PINningSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
 end
 
 function forward!(c::PINningSynapse, param::PINningSynapseParameter)
+    @unpack W, rI, rJ, g, P, q = c
     mul!(q, P, rJ)
     mul!(g, W, rJ)
 end
 
 function plasticity!(c::PINningSynapse, param::PINningSynapseParameter, dt::Float32, t::Float32)
+    @unpack W, rI, g, P, q, f = c
     C = 1 / (1 + dot(q, rI))
     BLAS.ger!(C, f - g, q, W)
     BLAS.ger!(-C, q, q, P)

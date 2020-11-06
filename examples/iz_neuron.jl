@@ -1,4 +1,6 @@
-using Plots, SNN
+using Plots
+using SpikingNeuralNetworks
+SNN.@load_units
 
 RS = SNN.IZ(;N = 1, param = SNN.IZParameter(;a = 0.02, b = 0.2, c = -65, d = 8))
 IB = SNN.IZ(;N = 1, param = SNN.IZParameter(;a = 0.02, b = 0.2, c = -55, d = 4))
@@ -21,4 +23,4 @@ for t = 0:T
     RZ.I =  [(0.5T < t < 0.6T) ? 10mV : 0mV]
     SNN.sim!(P, [], 0.1ms)
 end
-SNN.vecplot(P, :v) |> display
+SNN.vecplot(P, :v)

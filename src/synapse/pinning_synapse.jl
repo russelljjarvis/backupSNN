@@ -27,8 +27,8 @@ function PINningSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
 end
 
 function forward!(c::PINningSynapse, param::PINningSynapseParameter)
-    BLAS.A_mul_B!(q, P, rJ)
-    BLAS.A_mul_B!(g, W, rJ)
+    mul!(q, P, rJ)
+    mul!(g, W, rJ)
 end
 
 function plasticity!(c::PINningSynapse, param::PINningSynapseParameter, dt::Float32, t::Float32)

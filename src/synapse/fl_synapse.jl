@@ -33,13 +33,13 @@ end
 
 function forward!(c::FLSynapse, param::FLSynapseParameter)
     z = dot(w, rI)
-    BLAS.A_mul_B!(q, P, rJ)
-    BLAS.A_mul_B!(g, W, rJ)
-    BLAS.axpy!(z, u, g)
+    mul!(q, P, rJ)
+    mul!(g, W, rJ)
+    axpy!(z, u, g)
 end
 
 function plasticity!(c::FLSynapse, param::FLSynapseParameter, dt::Float32, t::Float32)
     C = 1 / (1 + dot(q, rI))
-    BLAS.axpy!(C * (f - z), q, w)
+    axpy!(C * (f - z), q, w)
     BLAS.ger!(-C, q, q, P)
 end

@@ -10,7 +10,7 @@ using UnPack
 
 include("units.jl")
 include("main.jl")
-include("utils.jl")
+include("util.jl")
 
 include("neuron/if.jl")
 include("neuron/if2.jl")

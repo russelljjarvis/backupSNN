@@ -1,7 +1,4 @@
-#using Plots; plotly()
 using SpikingNeuralNetworks
-#using Unitful
-#using Unitful.DefaultSymbols
 include(joinpath(@__DIR__, "..", "src", "units.jl")) # FIXME
 using Test
 

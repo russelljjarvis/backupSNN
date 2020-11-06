@@ -5,11 +5,8 @@ const SNN = SpikingNeuralNetworks
 
 using LinearAlgebra
 using SparseArrays
-using Reexport
 using Requires
 using UnPack
-#using Unitful
-#using Unitful.DefaultSymbols
 
 include("units.jl")
 include("main.jl")

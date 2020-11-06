@@ -1,9 +1,6 @@
 struct FLSynapseParameter
 end
 
-"""
-[Force Learning Sparse Synapse](http://www.theswartzfoundation.org/docs/Sussillo-Abbott-Coherent-Patterns-August-2009.pdf)
-"""
 @snn_kw mutable struct FLSynapse{VFT=Vector{Float32},FT=Float32}
     param::FLSynapseParameter = FLSynapseParameter()
     colptr::Vector{Int32} # column pointer of sparse W
@@ -20,6 +17,11 @@ end
     z::FT = 0.5randn()  # output z ≈ f
     records::Dict = Dict()
 end
+
+"""
+[Force Learning Sparse Synapse](http://www.theswartzfoundation.org/docs/Sussillo-Abbott-Coherent-Patterns-August-2009.pdf)
+"""
+FLSynapse
 
 function FLSynapse(pre, post; σ = 1.5, p = 0.0, α = 1, kwargs...)
     w = σ * 1 / √(p * pre.N) * sprandn(post.N, pre.N, p)

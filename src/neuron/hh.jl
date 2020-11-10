@@ -13,9 +13,6 @@
     Ei::FT = -80mV
 end
 
-"""
-[Hodgkin–Huxley Neuron](https://en.wikipedia.org/wiki/Hodgkin%E2%80%93Huxley_model)
-"""
 @snn_kw mutable struct HH{VFT=Vector{Float32},VBT=Vector{Bool}}
     param::HHParameter = HHParameter()
     N::Int32 = 100
@@ -29,6 +26,11 @@ end
     I::VFT = zeros(N)
     records::Dict = Dict()
 end
+
+"""
+[Hodgkin–Huxley Neuron](https://en.wikipedia.org/wiki/Hodgkin%E2%80%93Huxley_model)
+"""
+HH
 
 function integrate!(p::HH, param::HHParameter, dt::Float32)
     @unpack N, v, m, n, h, ge, gi, fire, I = p

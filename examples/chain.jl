@@ -1,4 +1,6 @@
-using Plots, SNN
+using Plots
+using SpikingNeuralNetworks
+SNN.@load_units
 
 N = 3
 E = SNN.IF(;N = N)
@@ -10,4 +12,4 @@ E.I[1] = 30
 
 SNN.monitor(E, [(:v, [1, N])])
 SNN.sim!([E], [EE]; duration = 100ms)
-SNN.vecplot(E, :v) |> display
+SNN.vecplot(E, :v)

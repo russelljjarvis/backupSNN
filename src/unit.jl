@@ -26,3 +26,12 @@ const mS = siemens / 1e3
 const msiemens = mS
 const nS = siemens / 1e9
 const nsiemens = nS
+
+macro load_units()
+    exs = map((:metre, :meter, :cm, :mm, :um, :nm, :second, :ms, :Hz, :voltage, :mV, :ampere, 
+        :mA, :uA, :nA, :farad, :uF, :ufarad, :siemens, :mS, :msiemens, :nS, :nsiemens)) do s
+        :($s = getfield($@__MODULE__, $(QuoteNode(s))))
+    end
+    ex = Expr(:block, exs...)
+    esc(ex)
+end

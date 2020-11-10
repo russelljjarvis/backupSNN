@@ -5,9 +5,6 @@
     d::FT = 2
 end
 
-"""
-[Izhikevich Neuron](https://www.izhikevich.org/publications/spikes.htm)
-"""
 @snn_kw mutable struct IZ{VFT=Vector{Float32},VBT=Vector{Bool}}
     param::IZParameter = IZParameter()
     N::Int32 = 100
@@ -17,6 +14,11 @@ end
     I::VFT = zeros(N)
     records::Dict = Dict()
 end
+
+"""
+[Izhikevich Neuron](https://www.izhikevich.org/publications/spikes.htm)
+"""
+IZ
 
 function integrate!(p::IZ, param::IZParameter, dt::Float32)
     @unpack N, v, u, fire, I = p

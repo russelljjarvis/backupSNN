@@ -1,9 +1,6 @@
-#using Plots; plotly()
 using SpikingNeuralNetworks
-#using Unitful
-#using Unitful.DefaultSymbols
-include(joinpath(@__DIR__, "..", "src", "units.jl")) # FIXME
 using Test
+SNN.@load_units
 
 if VERSION > v"1.1"
 include("ctors.jl")
@@ -18,4 +15,3 @@ include("iz_neuron.jl")
 include("oja.jl")
 include("rate_net.jl")
 include("stdp_demo.jl")
-# FIXME: include("stdp_song.jl")

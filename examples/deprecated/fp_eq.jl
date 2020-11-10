@@ -8,8 +8,8 @@ using Plots, SNN
 # SNN.monitor(G, [:fire, :v])
 #
 # SNN.sim!([G], []; duration=3)
-# # SNN.raster([G]) |> display
-# # SNN.activity([G]) |> display
+# # SNN.raster([G])
+# # SNN.activity([G])
 # SNN.density(G, :v)
 #
 #
@@ -23,7 +23,7 @@ fill!(G.I, 1.01)
 SNN.monitor(G, [:fire])
 
 SNN.sim!([G], []; duration=30)
-SNN.raster([G]) |> display
+SNN.raster([G])
 
 Plots.savefig("raster.jpg")
 #
@@ -44,4 +44,4 @@ Plots.savefig("raster.jpg")
 #   A = rate.(I, σ)
 #   Plots.plot!(p, I, A, label="b=$σ")
 # end
-# p |> display
+# p

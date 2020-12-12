@@ -10,6 +10,11 @@ function sim!(P, C, dt)
 end
 
 function sim!(P, C; dt = 0.1ms, duration = 10ms)
+
+    if hasproperty(P, :spike_raster )
+	P.spike_raster::Vector{SNNInt} = zeros(trunc(Int, size))
+
+    end
     for t = 0ms:dt:(duration - dt)
         sim!(P, C, dt)
     end

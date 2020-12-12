@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #include("../src/SpikingNeuralNetworks.jl")
-using ..SpikingNeuralNetworks.jl
+using SpikingNeuralNetworks
 SNN = SpikingNeuralNetworks
 
 include("../src/unit.jl")

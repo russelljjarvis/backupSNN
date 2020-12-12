@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+# # Julia SNN Implementation of AdExp Neuron.
+# [Adaptive_exponential_integrate and fire neuron](http://www.scholarpedia.org/article/Adaptive_exponential_integrate-and-fire_model)
+# Dr. Wulfram Gerstner
+# Romain Brette, Ecole Normale Supérieure, Paris, France
+#
+
 using Plots
 using SpikingNeuralNetworks
 SNN.@load_units
@@ -19,3 +26,5 @@ E.I = [795.57128906]
 SNN.monitor(E, [:v,:I])
 SNN.sim!([E],[], dt=0.1ms, duration=2000ms)
 SNN.vecplot(E, :v) |> display
+
+

@@ -33,7 +33,7 @@ defaults: &defaults
     - run:
         command: julia -E '] dev .'
     - run:
-        command: julia -E '] dev .'
+        command: julia test/runtests.jl
 
     - run:
         name: Create VFB for Atom to run in
@@ -91,44 +91,3 @@ jobs:
           root: /tmp
           paths:
             - project
-  lint:
-    <<: *defaults
-    docker:
-      - image: circleci/node:lts
-    steps:
-      # Restore project state
-      - attach_workspace:
-          at: /tmp
-      - run:
-          name: Node.js Version
-          command: node --version
-      - run:
-          name: NPM Version
-          command: npm --version
-      - run:
-          name: Install any remaining dependencies
-          command: npm install
-      - run:
-          name: Lint code
-          command: npm run lint
-  stable:
-    <<: *defaults
-  beta:
-    <<: *defaults
-    docker:
-      - image: arcanemagus/atom-docker-ci:beta
-
-workflows:
-  version: 2
-  test_package:
-    jobs:
-      - checkout_code
-      - lint:
-          requires:
-            - checkout_code
-      - stable:
-          requires:
-            - lint
-      - beta:
-          requires:
-            - lint

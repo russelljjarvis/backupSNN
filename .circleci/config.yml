@@ -1,93 +1,20 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+# .circleci/config.yml
 version: 2.1
-
-defaults: &defaults
-  working_directory: /tmp/project
-  docker:
-    - image: arcanemagus/atom-docker-ci:stable
-  steps:
-    # Restore project state
-    - attach_workspace:
-        at: /tmp
-    - run:
-        name: Install Julia v1.2.0
-        command: |
-          curl -o julia.tar.gz --location --silent --show-error \
-            https://julialang-s3.julialang.org/bin/linux/x64/1.2/julia-1.2.0-linux-x86_64.tar.gz && \
-          mkdir julia && \
-          tar --extract --gzip --strip 1 --directory=julia --file=julia.tar.gz && \
-          echo 'export PATH="/tmp/project/julia/bin:$PATH"' >> $BASH_ENV
-    - run:
-        name: Julia version
-        command: julia --version
-    - run:
-        name: Install Lint.jl
-        # Note the "using Lint" is to pre-compile the cache
-        # Also, we are using the `master` branch directly since a working
-        # version isn't currently released.
-        command: |
-          julia -E 'using Pkg; Pkg.add(PackageSpec(url="https://github.com/tonyhffong/Lint.jl", rev="master")); using Lint;'
-    - run:
-        name: Lint.jl version
-        command: julia -E 'using Pkg; Pkg.status("Lint");'
+orbs:
+  codecov: codecov/codecov@1.0.2 # need to allow 3rd party orbs in project settings on circleci
+jobs:
+  build:
+    working_directory: /root/project/RoecketScience   # Clone into a directory whose name matches your Package.
+    docker:
+      - image: julia:1.1                # image comes from Docker hub
+    - checkout
+      - run:
+          name: Install and Test this package
+          command: julia -e  'using Pkg; Pkg.update(); Pkg.clone(pwd()); Pkg.build("MyPkg"); Pkg.test("MyPkg", coverage=true);'
+      - run:
+          name: Process code-coverage
+          command: julia -e 'using Pkg; cd(Pkg.dir("MyPkg")); Pkg.add("Coverage"); using Coverage; coverage = process_folder(); LCOV.writefile("coverage-lcov.info", coverage)'
     - run:
         command: julia -E '] dev .'
     - run:
         command: julia test/runtests.jl
-
-    - run:
-        name: Create VFB for Atom to run in
-        command: /usr/local/bin/xvfb_start
-    - run:
-        name: Atom version
-        command: ${ATOM_SCRIPT_PATH} --version
-    - run:
-        name: APM version
-        command: ${APM_SCRIPT_PATH} --version
-    - run:
-        name: Package APM package dependencies
-        command: |
-          if [ -n "${APM_TEST_PACKAGES}" ]; then
-            for pack in ${APM_TEST_PACKAGES}; do
-            ${APM_SCRIPT_PATH} install "${pack}"
-            done
-          fi;
-    - run:
-        name: Package dependencies
-        command: ${APM_SCRIPT_PATH} install
-    - run:
-        name: Cleaning package
-        command: ${APM_SCRIPT_PATH} clean
-    - run:
-        name: Package specs
-        command: ${ATOM_SCRIPT_PATH} --test spec
-    # Cache node_modules
-    - save_cache:
-        paths:
-          - node_modules
-        key: v1-dependencies-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json"}}
-
-jobs:
-  checkout_code:
-    <<: *defaults
-    docker:
-      - image: circleci/node:latest
-    steps:
-      - checkout
-      # Restore node_modules from the last build
-      - restore_cache:
-          keys:
-          # Get latest cache for this package.json and package-lock.json
-          - v1-dependencies-{{ .Branch }}-{{ checksum "package.json" }}-{{ checksum "package-lock.json"}}
-          # Fallback to the current package.json
-          - v1-dependencies-{{ .Branch }}-{{ checksum "package.json" }}-
-          # Fallback to the last build for this branch
-          - v1-dependencies-{{ .Branch }}-
-          # Fallback to the last available master branch cache
-          - v1-dependencies-master-
-          # Don't go further down to prevent dependency issues from other branches
-      # Save project state for next steps
-      - persist_to_workspace:
-          root: /tmp
-          paths:
-            - project

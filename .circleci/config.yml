@@ -8,14 +8,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: "install package"
-          command: julia -E '] dev .'
+          name: Install and Test this package
+          command: julia -e 'using Pkg; Pkg.update(); pkg"dev ."; Pkg.test("SpikingNeuralNetworks", coverage=true);'
       - run:
           name: "run tests"
           command: julia test/runtests.jl
-      - run:
-          name: Install and Test this package
-          command: julia -e  'using Pkg; Pkg.update(); Pkg.clone(pwd()); Pkg.build("SpikingNeuralNetworks"); Pkg.test("SpikingNeuralNetworks", coverage=true);'
       - run:
           name: Process code-coverage
           command: julia -e 'using Pkg; cd(Pkg.dir("SpikingNeuralNetworks")); Pkg.add("Coverage"); using Coverage; coverage = process_folder(); LCOV.writefile("coverage-lcov.info", coverage)'

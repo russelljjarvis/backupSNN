@@ -1,8 +1,3 @@
-#=
-[Adaptive_exponential_integrate and fire neuron](http://www.scholarpedia.org/article/Adaptive_exponential_integrate-and-fire_model)
-Dr. Wulfram Gerstner
-Romain Brette, Ecole Normale Supérieure, Paris, France
-=#
 @snn_kw struct ADEXParameter{FT=Float32}
     a::FT = 4.0
     b::FT = 0.0805

@@ -10,6 +10,7 @@ function sim!(P, C, dt)
 end
 
 function sim!(P, C; dt = 0.1ms, duration = 10ms)
+<<<<<<< HEAD
 	sized = duration/dt
 	for p in P
 		if hasproperty(p, :spike_raster)
@@ -20,6 +21,11 @@ function sim!(P, C; dt = 0.1ms, duration = 10ms)
 			record!(p)
 		end
 	end
+=======
+    for t = 0ms:dt:(duration - dt)
+        sim!(P, C, dt)
+    end
+>>>>>>> 8135f6c... remove trailing sim!/train!
 end
 
 	#println(size(spike_raster))

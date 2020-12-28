@@ -1,8 +1,3 @@
-#=
-[Adaptive_exponential_integrate and fire neuron](http://www.scholarpedia.org/article/Adaptive_exponential_integrate-and-fire_model)
-Dr. Wulfram Gerstner
-Romain Brette, Ecole Normale Supérieure, Paris, France
-=#
 @snn_kw struct ADEXParameter{FT=Float32}
     a::FT = 4.0
     b::FT = 0.0805
@@ -17,17 +12,8 @@ Romain Brette, Ecole Normale Supérieure, Paris, France
     spike_delta::FT = 30
 end
 @snn_kw mutable struct AD{VFT=Vector{Float32},VBT=Vector{Bool}}
-    param::ADEXParameter = ADEXParameter(a,
-                                        b,
-                                        cm,
-                                        v_rest,
-                                        tau_m,
-                                        tau_w,
-                                        v_thresh,
-                                        delta_T,
-                                        v_spike,
-                                        v_reset,
-                                        spike_delta)
+    param::ADEXParameter = ADEXParameter()
+
     N::Int32 = 1
     cnt::Int32 = 1
     v::VFT = fill(param.v_rest, N)
